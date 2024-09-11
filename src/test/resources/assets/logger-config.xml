@@ -1,0 +1,11 @@
+<configuration>
+    <appender name="stdout" class="com.esri.logger.appender.TestAppender">
+        <encoder>
+            <pattern>%message</pattern>
+        </encoder>
+    </appender>
+
+    <root level="TRACE">
+        <appender-ref ref="stdout" />
+    </root>
+</configuration>
