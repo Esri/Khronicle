@@ -49,6 +49,10 @@ class ConfigurationParser {
       when (parser.name) {
         TAG_APPENDER -> handleAppender()
         TAG_ROOT -> handleRoot()
+        else -> {
+          println("Unsupported tag: ${parser.name}")
+          skip()
+        }
       }
     }
   }
@@ -71,6 +75,10 @@ class ConfigurationParser {
 
       when (parser.name) {
         TAG_ENCODER -> handleEncoder(appender)
+        else -> {
+          println("Unsupported tag: ${parser.name}")
+          skip()
+        }
       }
     }
   }
@@ -85,7 +93,10 @@ class ConfigurationParser {
 
       when (parser.name) {
         TAG_PATTERN -> appender.encoder = PatternEncoder(readText())
-        else -> skip()
+        else -> {
+          println("Unsupported tag: ${parser.name}")
+          skip()
+        }
       }
     }
   }
@@ -112,7 +123,10 @@ class ConfigurationParser {
         TAG_APPENDER_REF -> {
           appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { root.appenders.add(it) }
         }
-        else -> skip()
+        else -> {
+          println("Unsupported tag: ${parser.name}")
+          skip()
+        }
       }
     }
   }
