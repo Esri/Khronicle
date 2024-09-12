@@ -7,10 +7,6 @@ class PrintlnAppender : Appender {
   override var encoder: Encoder? = null
 
   override fun append(event: LoggingEvent) {
-    if (encoder == null) {
-      println(event.message)
-    } else {
-      println(encoder!!.encode(event).decodeToString())
-    }
+    encoder?.let { println(it.encode(event).decodeToString()) } ?: { println(event.message) }
   }
 }
