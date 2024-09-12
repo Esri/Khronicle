@@ -8,7 +8,9 @@ class LoggerFactory : ILoggerFactory {
 
   override fun getLogger(name: String): Logger {
     // For now we only support one logger
-    return loggers["root"]!!
+    return loggers["root"]
+        ?: throw RuntimeException(
+            "The root logger should have been prepared at initialization time. This should never happen.")
   }
 
   fun prepareLoggers(root: Root) {
