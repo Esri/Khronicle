@@ -10,6 +10,19 @@ import org.slf4j.event.Level
 import org.xmlpull.v1.XmlPullParser
 
 class ConfigurationParser {
+  companion object {
+    const val ATTR_CLASS = "class"
+    const val ATTR_LEVEL = "level"
+    const val ATTR_NAME = "name"
+    const val ATTR_REF = "ref"
+    const val TAG_APPENDER = "appender"
+    const val TAG_APPENDER_REF = "appender-ref"
+    const val TAG_CONFIGURATION = "configuration"
+    const val TAG_ENCODER = "encoder"
+    const val TAG_PATTERN = "pattern"
+    const val TAG_ROOT = "root"
+  }
+
   val root = Root()
 
   private val parser = Xml.newPullParser()
@@ -23,7 +36,7 @@ class ConfigurationParser {
   }
 
   private fun readFeed() {
-    parser.require(XmlPullParser.START_TAG, null, "configuration")
+    parser.require(XmlPullParser.START_TAG, null, TAG_CONFIGURATION)
     while (parser.next() != XmlPullParser.END_TAG) {
       if (parser.eventType == XmlPullParser.END_DOCUMENT) {
         throw RuntimeException("Invalid config file!")
@@ -34,17 +47,17 @@ class ConfigurationParser {
       }
 
       when (parser.name) {
-        "appender" -> handleAppender()
-        "root" -> handleRoot()
+        TAG_APPENDER -> handleAppender()
+        TAG_ROOT -> handleRoot()
       }
     }
   }
 
   private fun handleAppender() {
-    parser.require(XmlPullParser.START_TAG, null, "appender")
+    parser.require(XmlPullParser.START_TAG, null, TAG_APPENDER)
 
-    val appenderName = parser.getAttributeValue(null, "name")
-    val appenderClass = parser.getAttributeValue(null, "class")
+    val appenderName = parser.getAttributeValue(null, ATTR_NAME)
+    val appenderClass = parser.getAttributeValue(null, ATTR_CLASS)
     val appender =
         appenderClass?.let {
           Class.forName(appenderClass).getDeclaredConstructor().newInstance() as Appender
@@ -57,13 +70,13 @@ class ConfigurationParser {
       }
 
       when (parser.name) {
-        "encoder" -> handleEncoder(appender)
+        TAG_ENCODER -> handleEncoder(appender)
       }
     }
   }
 
   private fun handleEncoder(appender: Appender) {
-    parser.require(XmlPullParser.START_TAG, null, "encoder")
+    parser.require(XmlPullParser.START_TAG, null, TAG_ENCODER)
 
     while (parser.next() != XmlPullParser.END_TAG) {
       if (parser.eventType != XmlPullParser.START_TAG) {
@@ -71,7 +84,7 @@ class ConfigurationParser {
       }
 
       when (parser.name) {
-        "pattern" -> appender.encoder = PatternEncoder(readText())
+        TAG_PATTERN -> appender.encoder = PatternEncoder(readText())
         else -> skip()
       }
     }
@@ -87,8 +100,8 @@ class ConfigurationParser {
   }
 
   private fun handleRoot() {
-    parser.require(XmlPullParser.START_TAG, null, "root")
-    parser.getAttributeValue(null, "level")?.let { level -> root.setLevel(level) }
+    parser.require(XmlPullParser.START_TAG, null, TAG_ROOT)
+    parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
 
     while (parser.next() != XmlPullParser.END_TAG) {
       if (parser.eventType != XmlPullParser.START_TAG) {
@@ -96,8 +109,8 @@ class ConfigurationParser {
       }
 
       when (parser.name) {
-        "appender-ref" -> {
-          appenders[parser.getAttributeValue(null, "ref")]?.let { root.appenders.add(it) }
+        TAG_APPENDER_REF -> {
+          appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { root.appenders.add(it) }
         }
         else -> skip()
       }
