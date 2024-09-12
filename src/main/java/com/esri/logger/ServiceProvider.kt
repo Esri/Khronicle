@@ -34,7 +34,7 @@ class ServiceProvider : SLF4JServiceProvider {
     this.javaClass.classLoader?.getResource("assets/logger-config.xml")?.let { configUrl ->
       val configUrlConnection = configUrl.openConnection()
       val inputStream = configUrlConnection.getInputStream()
-      configParser.parse(inputStream)
+      inputStream.use { configParser.parse(it) }
     }
   }
 
