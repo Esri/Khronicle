@@ -2,6 +2,7 @@ package com.esri.logger
 
 import com.esri.logger.appender.FileAppender
 import com.esri.logger.appender.PrintlnAppender
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,8 +44,11 @@ class ConfigurationParserTest {
 
     configParser.parse(minimalConfig)
 
-    assertEquals(Root.DEFAULT_LEVEL, configParser.root.level)
-    assertEquals(0, configParser.root.appenders.size)
+    assertEquals(
+        "The logging level should default to ${Root.DEFAULT_LEVEL}",
+        Root.DEFAULT_LEVEL,
+        configParser.root.level)
+    assertEquals("No appender should be added", 0, configParser.root.appenders.size)
   }
 
   @Test
@@ -54,7 +58,10 @@ class ConfigurationParserTest {
 
     configParser.parse(testConfig)
 
-    assertEquals(Root.DEFAULT_LEVEL, configParser.root.level)
+    assertEquals(
+        "The logging level should default to ${Root.DEFAULT_LEVEL}",
+        Root.DEFAULT_LEVEL,
+        configParser.root.level)
   }
 
   @Test
@@ -64,7 +71,7 @@ class ConfigurationParserTest {
 
     configParser.parse(testConfig)
 
-    assertEquals(Level.TRACE, configParser.root.level)
+    assertEquals("The logging level should be set to TRACE", Level.TRACE, configParser.root.level)
   }
 
   @Test
@@ -89,8 +96,9 @@ class ConfigurationParserTest {
 
     configParser.parse(testConfig)
 
-    assertEquals(1, configParser.root.appenders.size)
-    assert(configParser.root.appenders.first is PrintlnAppender)
+    assertEquals("One appender should be added", 1, configParser.root.appenders.size)
+    assertThat(
+        "A PrintlnAppender should be added", configParser.root.appenders.first is PrintlnAppender)
   }
 
   @Test
@@ -114,7 +122,7 @@ class ConfigurationParserTest {
 
     configParser.parse(testConfig)
 
-    assertEquals(1, configParser.root.appenders.size)
-    assert(configParser.root.appenders.first is FileAppender)
+    assertEquals("One appender should be added", 1, configParser.root.appenders.size)
+    assertThat("A FileAppender should be added", configParser.root.appenders.first is FileAppender)
   }
 }

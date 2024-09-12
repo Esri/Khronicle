@@ -27,18 +27,18 @@ class ServiceProviderTest {
     testAppender.output = { event -> output = event.message }
 
     logger.trace("A trace message")
-    assertEquals("A trace message", output)
+    assertEquals("The message should be logged as-is", "A trace message", output)
 
     logger.debug("A debug message")
-    assertEquals("A debug message", output)
+    assertEquals("The message should be logged as-is", "A debug message", output)
 
     logger.info("An info message")
-    assertEquals("An info message", output)
+    assertEquals("The message should be logged as-is", "An info message", output)
 
     logger.warn("A warn message")
-    assertEquals("A warn message", output)
+    assertEquals("The message should be logged as-is", "A warn message", output)
 
     logger.error("An error message")
-    assertEquals("An error message", output)
+    assertEquals("The message should be logged as-is", "An error message", output)
   }
 }
