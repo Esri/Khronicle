@@ -2,18 +2,20 @@ package com.esri.logger
 
 import org.slf4j.ILoggerFactory
 import org.slf4j.IMarkerFactory
+import org.slf4j.helpers.BasicMarkerFactory
 import org.slf4j.spi.MDCAdapter
 import org.slf4j.spi.SLF4JServiceProvider
 
 class ServiceProvider : SLF4JServiceProvider {
   private val loggerFactory = LoggerFactory()
+  private val markerFactory = BasicMarkerFactory()
 
   override fun getLoggerFactory(): ILoggerFactory {
     return loggerFactory
   }
 
   override fun getMarkerFactory(): IMarkerFactory {
-    TODO("Not yet implemented")
+    return markerFactory
   }
 
   override fun getMDCAdapter(): MDCAdapter {
