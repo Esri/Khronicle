@@ -46,7 +46,8 @@ class FileAppender : Appender {
 
   override fun append(event: LoggingEvent) {
     bufferedWriter?.apply {
-      write(encoder?.encode(event)?.toString() ?: event.toString())
+      write(encoder?.encode(event)?.decodeToString() ?: event.message)
+      write("\n")
       flush()
     } ?: run { throw Exception("Must initialize log file before using appender") }
   }
