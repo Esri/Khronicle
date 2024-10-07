@@ -2,6 +2,7 @@ package com.esri.logger
 
 import androidx.core.text.isDigitsOnly
 import java.io.File
+import java.io.IOException
 
 internal fun File.incrementNumberedFileName(namePrefix: String, extension: String) {
   val indexString = name.removeSurrounding(namePrefix, extension)
@@ -15,7 +16,12 @@ internal fun File.incrementNumberedFileName(namePrefix: String, extension: Strin
             "Input file did not follow required prefix#extension pattern")
       }
 
-  renameTo(File(path, "$namePrefix$newIndex$extension"))
+  val newFile = File(path.removeSuffix(name), "$namePrefix$newIndex$extension")
+
+  val result = renameTo(newFile)
+  if (!result) {
+    throw IOException("Rename failed")
+  }
 }
 
 internal fun MutableList<File>.deleteExcessFiles(maxCount: Int) {

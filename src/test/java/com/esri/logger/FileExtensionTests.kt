@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import java.io.File
+import java.io.IOException
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,7 +16,7 @@ class FileExtensionsTest {
   @Test
   fun incrementNumberedFileName_withNoNumber_shouldNumberFileAsOne() {
     val file = mockk<File>()
-    every { file.path } returns "root"
+    every { file.path } returns "root/TestFile.ext"
     every { file.name } returns "TestFile.ext"
     every { file.renameTo(any()) } returns true
 
@@ -27,7 +28,7 @@ class FileExtensionsTest {
   @Test
   fun incrementNumberedFileName_shouldIncrementIndexCorrectly() {
     val file = mockk<File>()
-    every { file.path } returns "root"
+    every { file.path } returns "root/TestFile1.ext"
     every { file.name } returns "TestFile1.ext"
     every { file.renameTo(any()) } returns true
 
@@ -39,7 +40,7 @@ class FileExtensionsTest {
   @Test(expected = IllegalArgumentException::class)
   fun incrementNumberedFileName_withMissingPrefix_throwsIllegalArgumentException() {
     val file = mockk<File>()
-    every { file.path } returns "root"
+    every { file.path } returns "root/1.ext"
     every { file.name } returns "1.ext"
     every { file.renameTo(any()) } returns true
 
@@ -49,7 +50,7 @@ class FileExtensionsTest {
   @Test(expected = IllegalArgumentException::class)
   fun incrementNumberedFileName_withMissingSuffix_throwsIllegalArgumentException() {
     val file = mockk<File>()
-    every { file.path } returns "root"
+    every { file.path } returns "root/TestFile1"
     every { file.name } returns "TestFile1"
     every { file.renameTo(any()) } returns true
 
@@ -59,9 +60,19 @@ class FileExtensionsTest {
   @Test(expected = IllegalArgumentException::class)
   fun incrementNumberedFileName_withNonNumericFile_throwsIllegalArgumentException() {
     val file = mockk<File>()
-    every { file.path } returns "root"
+    every { file.path } returns "root/TestFileABCD.ext"
     every { file.name } returns "TestFileABCD.ext"
     every { file.renameTo(any()) } returns true
+
+    file.incrementNumberedFileName("TestFile", ".ext")
+  }
+
+  @Test(expected = IOException::class)
+  fun incrementNumberedFileName_withFailedRename_throwsIOException() {
+    val file = mockk<File>()
+    every { file.path } returns "root/TestFile1.ext"
+    every { file.name } returns "TestFile1.ext"
+    every { file.renameTo(any()) } returns false
 
     file.incrementNumberedFileName("TestFile", ".ext")
   }
