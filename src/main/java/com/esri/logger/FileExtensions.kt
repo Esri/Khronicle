@@ -17,12 +17,14 @@ import java.io.IOException
  */
 internal fun File.incrementNumberedFileName(namePrefix: String, extension: String) {
   val indexString = name.removeSurrounding(namePrefix, extension)
-  val newIndex = when {
-      indexString.isEmpty() -> 1
-      indexString.isDigitsOnly() -> indexString.toInt() + 1
-      else -> throw IllegalArgumentException(
-          "Input file did not follow required prefix#extension pattern")
-  }
+  val newIndex =
+      when {
+        indexString.isEmpty() -> 1
+        indexString.isDigitsOnly() -> indexString.toInt() + 1
+        else ->
+            throw IllegalArgumentException(
+                "Input file did not follow required prefix#extension pattern")
+      }
 
   val newFile = File(path.removeSuffix(name), "$namePrefix$newIndex$extension")
 
