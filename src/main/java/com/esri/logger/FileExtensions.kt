@@ -62,9 +62,16 @@ internal fun MutableList<File>.deleteExcessFiles(maxCount: Int) {
  * "log1.txt"
  */
 internal fun File.rotateFilesInPath(filename: String, extension: String, maxFiles: Int) {
-  listFiles()?.toMutableList()?.apply {
-    sortDescending()
-    deleteExcessFiles(maxFiles - 1)
-    forEach { file -> file.incrementNumberedFileName(filename, extension) }
-  }
+  listFiles()
+      ?.filter { it.matchesNumberedFilePattern(filename, extension) }
+      ?.toMutableList()
+      ?.apply {
+        sortDescending()
+        deleteExcessFiles(maxFiles - 1)
+        forEach { file -> file.incrementNumberedFileName(filename, extension) }
+      }
+}
+
+internal fun File.matchesNumberedFilePattern(filename: String, extension: String): Boolean {
+  return Regex("^$filename\\d*\\$extension$").matches(name)
 }

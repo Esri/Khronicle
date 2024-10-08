@@ -125,9 +125,10 @@ class FileExtensionsTest {
     val logFile = MockFile("log.txt", "logs/log.txt")
     val log1File = MockFile("log1.txt", "logs/log1.txt")
     val log2File = MockFile("log2.txt", "logs/log2.txt")
+    val misnamedFile = MockFile("notalog.txt", "logs/notalog.txt")
 
     val mockDirectory = mockk<File>()
-    val fileList = mutableListOf(logFile, log1File, log2File)
+    val fileList = mutableListOf(logFile, log1File, log2File, misnamedFile)
     every { mockDirectory.listFiles() } returns fileList.toTypedArray()
 
     // Test
@@ -137,5 +138,35 @@ class FileExtensionsTest {
     verify { logFile.renameTo(File("logs", "log1.txt")) }
     verify { log1File.renameTo(File("logs", "log2.txt")) }
     verify { log2File.delete() }
+    verify(exactly = 0) {
+      misnamedFile.delete()
+      misnamedFile.renameTo(any())
+    }
+  }
+
+  @Test
+  fun matchesNumberedFilePattern_exhibitsExpectedRegexBehaviors() {
+    val filename = "log"
+    val extension = ".txt"
+
+    assertThat(
+        "File name expected to pass regex matcher",
+        File("log.txt").matchesNumberedFilePattern(filename, extension))
+    assertThat(
+        "File name expected to pass regex matcher",
+        File("log1.txt").matchesNumberedFilePattern(filename, extension))
+
+    assertThat(
+        "File name expected to not pass regex matcher",
+        File("notlog.txt").matchesNumberedFilePattern(filename, extension) == false)
+    assertThat(
+        "File name expected to not pass regex matcher",
+        File("lognot.txt").matchesNumberedFilePattern(filename, extension) == false)
+    assertThat(
+        "File name expected to not pass regex matcher",
+        File("log.txtnot").matchesNumberedFilePattern(filename, extension) == false)
+    assertThat(
+        "File name expected to not pass regex matcher",
+        File("log.nottxt").matchesNumberedFilePattern(filename, extension) == false)
   }
 }
