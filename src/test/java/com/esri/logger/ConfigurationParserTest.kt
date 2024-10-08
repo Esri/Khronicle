@@ -1,12 +1,15 @@
 package com.esri.logger
 
+import com.esri.logger.android.AndroidAPIProvider
 import com.esri.logger.appender.FileAppender
 import com.esri.logger.appender.PrintlnAppender
+import java.lang.ref.WeakReference
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.slf4j.event.Level
 import org.xmlpull.v1.XmlPullParserException
 
@@ -103,6 +106,8 @@ class ConfigurationParserTest {
 
   @Test
   fun parse_fileAppenderGetsAddedCorrectly() {
+    AndroidAPIProvider.AppContext = WeakReference(RuntimeEnvironment.getApplication())
+
     val testConfig =
         """
             <configuration>
