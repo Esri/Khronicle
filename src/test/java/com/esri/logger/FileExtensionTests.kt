@@ -108,4 +108,34 @@ class FileExtensionsTest {
       file2.delete()
     }
   }
+
+  @Test
+  fun rotateFilesInPath_updatesNamesAndDeletesExcessFiles() {
+
+    fun MockFile(name: String, path: String): File {
+      val file = mockk<File>()
+      every { file.name } returns name
+      every { file.path } returns path
+      every { file.renameTo(any()) } returns true
+      every { file.compareTo(any()) } answers { file.name.compareTo(firstArg<File>().name) }
+      every { file.delete() } returns true
+      return file
+    }
+
+    val logFile = MockFile("log.txt", "logs/log.txt")
+    val log1File = MockFile("log1.txt", "logs/log1.txt")
+    val log2File = MockFile("log2.txt", "logs/log2.txt")
+
+    val mockDirectory = mockk<File>()
+    val fileList = mutableListOf(logFile, log1File, log2File)
+    every { mockDirectory.listFiles() } returns fileList.toTypedArray()
+
+    // Test
+    mockDirectory.rotateFilesInPath("log", ".txt", 3)
+
+    // Assert
+    verify { logFile.renameTo(File("logs", "log1.txt")) }
+    verify { log1File.renameTo(File("logs", "log2.txt")) }
+    verify { log2File.delete() }
+  }
 }
