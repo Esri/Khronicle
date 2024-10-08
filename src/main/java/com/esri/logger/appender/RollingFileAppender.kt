@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileWriter
 import org.slf4j.event.LoggingEvent
 
-class FileAppender : Appender {
+class RollingFileAppender : Appender {
 
   companion object {
     private const val FILENAME = "AndroidLog"

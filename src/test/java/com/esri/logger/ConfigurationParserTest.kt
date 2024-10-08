@@ -1,8 +1,8 @@
 package com.esri.logger
 
 import com.esri.logger.android.AndroidAPIProvider
-import com.esri.logger.appender.FileAppender
 import com.esri.logger.appender.PrintlnAppender
+import com.esri.logger.appender.RollingFileAppender
 import java.lang.ref.WeakReference
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
@@ -105,13 +105,13 @@ class ConfigurationParserTest {
   }
 
   @Test
-  fun parse_fileAppenderGetsAddedCorrectly() {
+  fun parse_rollingFileAppenderGetsAddedCorrectly() {
     AndroidAPIProvider.AppContext = WeakReference(RuntimeEnvironment.getApplication())
 
     val testConfig =
         """
             <configuration>
-                <appender name="file" class="com.esri.logger.appender.FileAppender">
+                <appender name="file" class="com.esri.logger.appender.RollingFileAppender">
                     <encoder>
                         <pattern>arbitrary pattern</pattern>
                     </encoder>
@@ -128,6 +128,8 @@ class ConfigurationParserTest {
     configParser.parse(testConfig)
 
     assertEquals("One appender should be added", 1, configParser.root.appenders.size)
-    assertThat("A FileAppender should be added", configParser.root.appenders.first is FileAppender)
+    assertThat(
+        "A RollingFileAppender should be added",
+        configParser.root.appenders.first is RollingFileAppender)
   }
 }
