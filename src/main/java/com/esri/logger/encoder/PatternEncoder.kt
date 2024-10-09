@@ -9,7 +9,7 @@ class PatternEncoder(private val pattern: String) : Encoder {
             .replace("%level", loggingEvent.level.toString())
             .replace("%message", loggingEvent.message)
             .replace("%marker", loggingEvent.markers?.toString() ?: "")
-            .run { this + loggingEvent.throwable?.let { "\n$it" } }
+            .run { this + (loggingEvent.throwable?.let { "\n$it" } ?: "") }
 
     val reversedArgs = loggingEvent.arguments?.asReversed()
     val message =
