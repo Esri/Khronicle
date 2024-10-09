@@ -4,6 +4,7 @@ import com.esri.logger.encoder.PatternEncoder
 import org.junit.Assert.*
 import org.junit.Test
 import org.slf4j.event.Level
+import org.slf4j.helpers.BasicMarkerFactory
 
 class PatternEncoderTest {
   @Test
@@ -95,5 +96,40 @@ class PatternEncoderTest {
     val encodedString = encoder.encode(loggingEvent).decodeToString()
 
     assertEquals("The argument should be encoded as \"null\"", "Hello, null!", encodedString)
+  }
+
+  @Test
+  fun encoder_encodesMarkers() {
+    val marker = BasicMarkerFactory().getMarker("test")
+    val encoder = PatternEncoder("%marker %message")
+    val loggingEvent =
+        LoggingEvent().apply {
+          this.level = Level.DEBUG
+          this.message = "Hello!"
+          this.markers = mutableListOf(marker)
+        }
+
+    val encodedString = encoder.encode(loggingEvent).decodeToString()
+
+    assertEquals("The marker should be encoded as [test]", "[test] Hello!", encodedString)
+  }
+
+  @Test
+  fun encoder_appendsThrowable_evenWithoutASubstitutionPattern() {
+    val encoder = PatternEncoder("%message") // no {} in our string
+    val throwable = Exception("test")
+    val loggingEvent =
+        LoggingEvent().apply {
+          this.level = Level.DEBUG
+          this.message = "Hello!"
+          this.throwable = throwable
+        }
+
+    val encodedString = encoder.encode(loggingEvent).decodeToString()
+
+    assertEquals(
+        "The throwable should be auto appended at the end of the message",
+        "Hello!\n${throwable}",
+        encodedString)
   }
 }
