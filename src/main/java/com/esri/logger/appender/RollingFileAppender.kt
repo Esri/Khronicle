@@ -36,8 +36,7 @@ class RollingFileAppender : Appender {
 
   override fun append(event: LoggingEvent) {
     bufferedWriter?.apply {
-      write(encoder?.encode(event)?.decodeToString() ?: event.message)
-      write("\n")
+      write((encoder?.encode(event)?.decodeToString() ?: event.message) + "\n")
       flush()
     } ?: run { throw Exception("Must initialize log file before using appender") }
   }

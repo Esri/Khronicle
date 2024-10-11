@@ -132,4 +132,23 @@ class PatternEncoderTest {
         "Hello!\n${throwable}",
         encodedString)
   }
+
+  @Test
+  fun encoder_encodesDate() {
+    val currentTimestamp = 1728676162123
+    val encoder = PatternEncoder("%date %message")
+    val loggingEvent =
+        LoggingEvent().apply {
+          this.level = Level.DEBUG
+          this.message = "Hello!"
+          this.timeStamp = currentTimestamp
+        }
+
+    val encodedString = encoder.encode(loggingEvent).decodeToString()
+
+    assertEquals(
+        "The timestamp should be encoded as [10-11-2024 12:49:22,123]",
+        "10-11-2024 12:49:22,123 Hello!",
+        encodedString)
+  }
 }

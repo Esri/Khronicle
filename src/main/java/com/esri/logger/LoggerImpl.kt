@@ -44,6 +44,7 @@ class LoggerImpl(private val loggerName: String) : Logger {
           this.arguments = arguments
           this.markers = marker?.let { mutableListOf(it) }
           this.throwable = internalThrowable
+          this.timeStamp = System.currentTimeMillis()
         }
 
     log(loggingEvent)
