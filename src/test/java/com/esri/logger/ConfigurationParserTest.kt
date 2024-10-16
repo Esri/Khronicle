@@ -78,7 +78,7 @@ class ConfigurationParserTest {
   }
 
   @Test
-  fun parse_printlnAppenderGetsAddedByDefault() {
+  fun parse_printlnAppenderGetsAddedWhenPresent() {
     val expectedPattern = "%level %logger %message"
     val testConfig =
         """
@@ -102,6 +102,32 @@ class ConfigurationParserTest {
     assertEquals("One appender should be added", 1, configParser.root.appenders.size)
     assertThat(
         "A PrintlnAppender should be added", configParser.root.appenders.first is PrintlnAppender)
+  }
+
+  @Test
+  fun parse_multipleAppendersAreSupported() {
+    val testConfig =
+        """
+          <configuration>
+              <appender name="stdout"/>
+              <root>
+                  <appender-ref ref="stdout" />
+                  <appender-ref ref="stdout" />
+              </root>
+          </configuration>"
+      """
+            .trimIndent()
+            .byteInputStream()
+
+    val configParser = ConfigurationParser()
+    configParser.parse(testConfig)
+
+    assertEquals("Two appenders should be added", 2, configParser.root.appenders.size)
+    assertThat(
+        "A PrintlnAppender should be added", configParser.root.appenders.first is PrintlnAppender)
+    assertThat(
+        "A Second PrintlnAppender should be added",
+        configParser.root.appenders[1] is PrintlnAppender)
   }
 
   @Test

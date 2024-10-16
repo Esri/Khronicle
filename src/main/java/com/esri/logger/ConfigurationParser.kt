@@ -50,7 +50,7 @@ class ConfigurationParser {
         TAG_APPENDER -> handleAppender()
         TAG_ROOT -> handleRoot()
         else -> {
-          println("Unsupported tag: ${parser.name}")
+          println("Feed found unsupported tag: ${parser.name}")
           skip()
         }
       }
@@ -76,7 +76,7 @@ class ConfigurationParser {
       when (parser.name) {
         TAG_ENCODER -> handleEncoder(appender)
         else -> {
-          println("Unsupported tag: ${parser.name}")
+          println("Appender found unsupported tag: ${parser.name}")
           skip()
         }
       }
@@ -94,7 +94,7 @@ class ConfigurationParser {
       when (parser.name) {
         TAG_PATTERN -> appender.encoder = PatternEncoder(readText())
         else -> {
-          println("Unsupported tag: ${parser.name}")
+          println("Encoder found unsupported tag: ${parser.name}")
           skip()
         }
       }
@@ -114,7 +114,7 @@ class ConfigurationParser {
     parser.require(XmlPullParser.START_TAG, null, TAG_ROOT)
     parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
 
-    while (parser.next() != XmlPullParser.END_TAG) {
+    while (!(parser.next() == XmlPullParser.END_TAG && parser.name == TAG_ROOT)) {
       if (parser.eventType != XmlPullParser.START_TAG) {
         continue
       }
@@ -124,7 +124,7 @@ class ConfigurationParser {
           appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { root.appenders.add(it) }
         }
         else -> {
-          println("Unsupported tag: ${parser.name}")
+          println("Root found unsupported tag: ${parser.name}")
           skip()
         }
       }
