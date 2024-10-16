@@ -35,71 +35,102 @@ class ConfigurationParser {
     readFeed()
   }
 
-  private fun readFeed() {
-    parser.require(XmlPullParser.START_TAG, null, TAG_CONFIGURATION)
-    while (parser.next() != XmlPullParser.END_TAG) {
-      if (parser.eventType == XmlPullParser.END_DOCUMENT) {
-        throw RuntimeException("Invalid config file!")
-      }
+  // region Logger-Android XML content readers
 
-      if (parser.eventType != XmlPullParser.START_TAG) {
-        continue
-      }
+  private fun readFeed() =
+      handleTag(parser, TAG_CONFIGURATION) {
+        while (parser.next() != XmlPullParser.END_TAG) {
+          if (parser.eventType == XmlPullParser.END_DOCUMENT) {
+            throw RuntimeException("Invalid config file!")
+          }
 
-      when (parser.name) {
-        TAG_APPENDER -> handleAppender()
-        TAG_ROOT -> handleRoot()
-        else -> {
-          println("Feed found unsupported tag: ${parser.name}")
-          skip()
+          if (parser.eventType != XmlPullParser.START_TAG) {
+            continue
+          }
+
+          when (parser.name) {
+            TAG_APPENDER -> handleAppender()
+            TAG_ROOT -> handleRoot()
+            else -> {
+              println("Feed found unsupported tag: ${parser.name}")
+              skip()
+            }
+          }
         }
       }
-    }
-  }
 
-  private fun handleAppender() {
-    parser.require(XmlPullParser.START_TAG, null, TAG_APPENDER)
+  private fun handleAppender() =
+      handleTag(parser, TAG_APPENDER) {
+        val appenderName = parser.getAttributeValue(null, ATTR_NAME)
+        val appenderClass = parser.getAttributeValue(null, ATTR_CLASS)
+        val appender =
+            appenderClass?.let {
+              Class.forName(appenderClass).getDeclaredConstructor().newInstance() as Appender
+            } ?: PrintlnAppender()
+        appenders[appenderName] = appender
 
-    val appenderName = parser.getAttributeValue(null, ATTR_NAME)
-    val appenderClass = parser.getAttributeValue(null, ATTR_CLASS)
-    val appender =
-        appenderClass?.let {
-          Class.forName(appenderClass).getDeclaredConstructor().newInstance() as Appender
-        } ?: PrintlnAppender()
-    appenders[appenderName] = appender
+        while (parser.next() != XmlPullParser.END_TAG) {
+          if (parser.eventType != XmlPullParser.START_TAG) {
+            continue
+          }
 
-    while (parser.next() != XmlPullParser.END_TAG) {
-      if (parser.eventType != XmlPullParser.START_TAG) {
-        continue
-      }
-
-      when (parser.name) {
-        TAG_ENCODER -> handleEncoder(appender)
-        else -> {
-          println("Appender found unsupported tag: ${parser.name}")
-          skip()
+          when (parser.name) {
+            TAG_ENCODER -> handleEncoder(appender)
+            else -> {
+              println("Appender found unsupported tag: ${parser.name}")
+              skip()
+            }
+          }
         }
       }
-    }
-  }
 
-  private fun handleEncoder(appender: Appender) {
-    parser.require(XmlPullParser.START_TAG, null, TAG_ENCODER)
+  private fun handleEncoder(appender: Appender) =
+      handleTag(parser, TAG_ENCODER) {
+        while (parser.next() != XmlPullParser.END_TAG) {
+          if (parser.eventType != XmlPullParser.START_TAG) {
+            continue
+          }
 
-    while (parser.next() != XmlPullParser.END_TAG) {
-      if (parser.eventType != XmlPullParser.START_TAG) {
-        continue
-      }
-
-      when (parser.name) {
-        TAG_PATTERN -> appender.encoder = PatternEncoder(readText())
-        else -> {
-          println("Encoder found unsupported tag: ${parser.name}")
-          skip()
+          when (parser.name) {
+            TAG_PATTERN -> appender.encoder = PatternEncoder(readText())
+            else -> {
+              println("Encoder found unsupported tag: ${parser.name}")
+              skip()
+            }
+          }
         }
       }
-    }
-  }
+
+  private fun handleRoot() =
+      handleTag(parser, TAG_ROOT) {
+        parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+          if (parser.eventType != XmlPullParser.START_TAG) {
+            continue
+          }
+
+          when (parser.name) {
+            TAG_APPENDER_REF -> {
+              handleAppenderRef()
+            }
+            else -> {
+              println("Root found unsupported tag: ${parser.name}")
+              skip()
+            }
+          }
+        }
+      }
+
+  private fun handleAppenderRef() =
+      handleTag(parser, TAG_APPENDER_REF) {
+        appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { root.appenders.add(it) }
+        parser.nextTag()
+      }
+
+  // endregion
+
+  // region General XML readers
 
   private fun readText(): String {
     var result = ""
@@ -108,27 +139,6 @@ class ConfigurationParser {
       parser.nextTag()
     }
     return result
-  }
-
-  private fun handleRoot() {
-    parser.require(XmlPullParser.START_TAG, null, TAG_ROOT)
-    parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
-
-    while (!(parser.next() == XmlPullParser.END_TAG && parser.name == TAG_ROOT)) {
-      if (parser.eventType != XmlPullParser.START_TAG) {
-        continue
-      }
-
-      when (parser.name) {
-        TAG_APPENDER_REF -> {
-          appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { root.appenders.add(it) }
-        }
-        else -> {
-          println("Root found unsupported tag: ${parser.name}")
-          skip()
-        }
-      }
-    }
   }
 
   private fun skip() {
@@ -143,6 +153,14 @@ class ConfigurationParser {
         XmlPullParser.START_TAG -> depth++
       }
     }
+  }
+
+  // endregion
+
+  private fun handleTag(parser: XmlPullParser, name: String, body: () -> Unit) {
+    parser.require(XmlPullParser.START_TAG, null, name)
+    body.invoke()
+    parser.require(XmlPullParser.END_TAG, null, name)
   }
 }
 
