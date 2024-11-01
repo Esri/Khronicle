@@ -33,6 +33,7 @@ dependencies {
   implementation(libs.androidx.appcompat)
   implementation(libs.material)
   implementation(libs.slf4j.api)
+  implementation(libs.kotlin.reflect)
 
   testImplementation(libs.junit)
   testImplementation(libs.robolectric)

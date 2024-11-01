@@ -11,33 +11,33 @@ import org.slf4j.event.LoggingEvent
 class RollingFileAppender : Appender {
 
   companion object {
-    private const val FILENAME = "AndroidLog"
+    private const val FILENAME_DEFAULT = "AndroidLog"
     private const val EXTENSION = ".txt"
     private const val MAX_FILES = 6
   }
 
   override var encoder: Encoder? = null
 
-  private var bufferedWriter: BufferedWriter?
+  var fileName: String = FILENAME_DEFAULT
 
-  init {
+  private val bufferedWriter: BufferedWriter by lazy {
     val appDir = AndroidAPIProvider.filesDir
     val logDir = File("$appDir/logs")
     if (!logDir.exists()) {
       logDir.mkdir()
     }
 
-    logDir.rotateFilesInPath(FILENAME, EXTENSION, MAX_FILES)
+    logDir.rotateFilesInPath(fileName, EXTENSION, MAX_FILES)
 
-    val logFile = File("${logDir}/$FILENAME$EXTENSION")
+    val logFile = File("${logDir}/$fileName$EXTENSION")
     logFile.createNewFile()
-    bufferedWriter = BufferedWriter(FileWriter(logFile))
+    BufferedWriter(FileWriter(logFile))
   }
 
   override fun append(event: LoggingEvent) {
-    bufferedWriter?.apply {
+    bufferedWriter.apply {
       write((encoder?.encode(event)?.decodeToString() ?: event.message) + "\n")
       flush()
-    } ?: run { throw Exception("Must initialize log file before using appender") }
+    }
   }
 }

@@ -15,6 +15,7 @@ class PatternEncoder(private val pattern: String) : Encoder {
             .replace("%message", loggingEvent.message)
             .replace("%marker", loggingEvent.markers?.toString() ?: "")
             .replace("%date", dateFormatter.format(loggingEvent.timeStamp))
+            .replace("%timestamp", loggingEvent.timeStamp.toString())
             .run { this + (loggingEvent.throwable?.let { "\n$it" } ?: "") }
 
     val reversedArgs = loggingEvent.arguments?.asReversed()

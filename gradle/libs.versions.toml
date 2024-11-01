@@ -6,6 +6,7 @@ espressoCore = "3.6.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlin = "1.9.0"
+kotlinReflect = "2.0.21"
 material = "1.10.0"
 mockkVersion = "1.13.9"
 robolectric = "4.13"
@@ -19,6 +20,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 io-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockkVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric"}
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jApi"}

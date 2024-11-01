@@ -1,11 +1,14 @@
 package com.esri.logger
 
+import android.R.attr.propertyName
 import android.util.Xml
 import com.esri.logger.appender.Appender
-import com.esri.logger.appender.PrintlnAppender
 import com.esri.logger.encoder.PatternEncoder
 import java.io.InputStream
 import java.util.LinkedList
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.memberProperties
 import org.slf4j.event.Level
 import org.xmlpull.v1.XmlPullParser
 
@@ -21,9 +24,10 @@ class ConfigurationParser {
     const val TAG_ENCODER = "encoder"
     const val TAG_PATTERN = "pattern"
     const val TAG_ROOT = "root"
+    const val TAG_LOGGER = "logger"
   }
 
-  val root = Root()
+  val loggers = mutableMapOf<String, LoggerConfig>()
 
   private val parser = Xml.newPullParser()
   private val appenders = HashMap<String, Appender>()
@@ -51,6 +55,7 @@ class ConfigurationParser {
           when (parser.name) {
             TAG_APPENDER -> handleAppender()
             TAG_ROOT -> handleRoot()
+            TAG_LOGGER -> handleLogger()
             else -> {
               println("Feed found unsupported tag: ${parser.name}")
               skip()
@@ -63,11 +68,30 @@ class ConfigurationParser {
       handleTag(parser, TAG_APPENDER) {
         val appenderName = parser.getAttributeValue(null, ATTR_NAME)
         val appenderClass = parser.getAttributeValue(null, ATTR_CLASS)
-        val appender =
-            appenderClass?.let {
-              Class.forName(appenderClass).getDeclaredConstructor().newInstance() as Appender
-            } ?: PrintlnAppender()
+
+        val kClass =
+            appenderClass?.let { Class.forName(appenderClass).kotlin }
+                ?: run { throw RuntimeException("Appender with name \"$appenderClass\" not found") }
+
+        val appender = kClass.createInstance() as Appender
+
         appenders[appenderName] = appender
+
+        val attrs = parser.attributeCount
+        for (index in 0 until attrs) {
+          val name = parser.getAttributeName(index)
+          val value = parser.getAttributeValue(index)
+          if (name != ATTR_NAME && name != ATTR_CLASS) {
+            val property =
+                kClass.memberProperties.find { it.name == name } as? KMutableProperty1<Any, Any?>
+            if (property != null) {
+              property.set(appender, value)
+              println("Property $propertyName set to $value")
+            } else {
+              println("Property $propertyName not found")
+            }
+          }
+        }
 
         while (parser.next() != XmlPullParser.END_TAG) {
           if (parser.eventType != XmlPullParser.START_TAG) {
@@ -103,6 +127,9 @@ class ConfigurationParser {
 
   private fun handleRoot() =
       handleTag(parser, TAG_ROOT) {
+        val root = LoggerConfig()
+        loggers["root"] = root
+
         parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -112,7 +139,7 @@ class ConfigurationParser {
 
           when (parser.name) {
             TAG_APPENDER_REF -> {
-              handleAppenderRef()
+              handleAppenderRef(root)
             }
             else -> {
               println("Root found unsupported tag: ${parser.name}")
@@ -122,9 +149,36 @@ class ConfigurationParser {
         }
       }
 
-  private fun handleAppenderRef() =
+  private fun handleLogger() =
+      handleTag(parser, TAG_LOGGER) {
+        val logger =
+            parser.getAttributeValue(null, ATTR_NAME)?.let { name ->
+              val logger = LoggerConfig()
+              loggers[name] = logger
+              logger
+            } ?: run { throw Exception("Logger configuration requires name attribute") }
+        parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> logger.setLevel(level) }
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+          if (parser.eventType != XmlPullParser.START_TAG) {
+            continue
+          }
+
+          when (parser.name) {
+            TAG_APPENDER_REF -> {
+              handleAppenderRef(logger)
+            }
+            else -> {
+              println("Root found unsupported tag: ${parser.name}")
+              skip()
+            }
+          }
+        }
+      }
+
+  private fun handleAppenderRef(logger: LoggerConfig) =
       handleTag(parser, TAG_APPENDER_REF) {
-        appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { root.appenders.add(it) }
+        appenders[parser.getAttributeValue(null, ATTR_REF)]?.let { logger.appenders.add(it) }
         parser.nextTag()
       }
 
@@ -164,7 +218,7 @@ class ConfigurationParser {
   }
 }
 
-class Root {
+class LoggerConfig {
   var level: Level = DEFAULT_LEVEL
   val appenders = LinkedList<Appender>()
 

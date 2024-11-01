@@ -42,6 +42,6 @@ class ServiceProvider : SLF4JServiceProvider {
 
   private fun prepareLoggers(configParser: ConfigurationParser) {
     val loggerFactory = loggerFactory
-    loggerFactory.prepareLoggers(configParser.root)
+    loggerFactory.prepareLoggers(configParser.loggers)
   }
 }
