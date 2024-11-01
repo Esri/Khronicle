@@ -1,8 +1,8 @@
 package com.esri.logger
 
 import com.esri.logger.android.AndroidAPIProvider
-import com.esri.logger.appender.PrintlnAppender
 import com.esri.logger.appender.RollingFileAppender
+import com.esri.logger.appender.TestAppender
 import java.lang.ref.WeakReference
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
@@ -47,11 +47,12 @@ class ConfigurationParserTest {
 
     configParser.parse(minimalConfig)
 
+    val root = configParser.loggers["root"]
     assertEquals(
-        "The logging level should default to ${Root.DEFAULT_LEVEL}",
-        Root.DEFAULT_LEVEL,
-        configParser.root.level)
-    assertEquals("No appender should be added", 0, configParser.root.appenders.size)
+        "The logging level should default to ${LoggerConfig.DEFAULT_LEVEL}",
+        LoggerConfig.DEFAULT_LEVEL,
+        root?.level)
+    assertEquals("No appender should be added", 0, root?.appenders?.size)
   }
 
   @Test
@@ -61,10 +62,11 @@ class ConfigurationParserTest {
 
     configParser.parse(testConfig)
 
+    val root = configParser.loggers["root"]
     assertEquals(
-        "The logging level should default to ${Root.DEFAULT_LEVEL}",
-        Root.DEFAULT_LEVEL,
-        configParser.root.level)
+        "The logging level should default to ${LoggerConfig.DEFAULT_LEVEL}",
+        LoggerConfig.DEFAULT_LEVEL,
+        root?.level)
   }
 
   @Test
@@ -73,23 +75,23 @@ class ConfigurationParserTest {
     val configParser = ConfigurationParser()
 
     configParser.parse(testConfig)
-
-    assertEquals("The logging level should be set to TRACE", Level.TRACE, configParser.root.level)
+    val root = configParser.loggers["root"]
+    assertEquals("The logging level should be set to TRACE", Level.TRACE, root?.level)
   }
 
   @Test
-  fun parse_printlnAppenderGetsAddedWhenPresent() {
+  fun parse_testAppenderGetsAddedWhenPresent() {
     val expectedPattern = "%level %logger %message"
     val testConfig =
         """
             <configuration>
-                <appender name="stdout">
+                <appender name="TestAppender" class="com.esri.logger.appender.TestAppender">
                     <encoder>
                         <pattern>${expectedPattern}</pattern>
                     </encoder>
                 </appender>
                 <root>
-                    <appender-ref ref="stdout" />
+                    <appender-ref ref="TestAppender" />
                 </root>
             </configuration>"
         """
@@ -98,10 +100,9 @@ class ConfigurationParserTest {
     val configParser = ConfigurationParser()
 
     configParser.parse(testConfig)
-
-    assertEquals("One appender should be added", 1, configParser.root.appenders.size)
-    assertThat(
-        "A PrintlnAppender should be added", configParser.root.appenders.first is PrintlnAppender)
+    val root = configParser.loggers["root"]
+    assertEquals("One appender should be added", 1, root?.appenders?.size)
+    assertThat("A PrintlnAppender should be added", root?.appenders?.first() is TestAppender)
   }
 
   @Test
@@ -109,10 +110,10 @@ class ConfigurationParserTest {
     val testConfig =
         """
           <configuration>
-              <appender name="stdout"/>
+              <appender name="TestAppender" class="com.esri.logger.appender.TestAppender"/>
               <root>
-                  <appender-ref ref="stdout" />
-                  <appender-ref ref="stdout" />
+                  <appender-ref ref="TestAppender" />
+                  <appender-ref ref="TestAppender" />
               </root>
           </configuration>"
       """
@@ -121,13 +122,10 @@ class ConfigurationParserTest {
 
     val configParser = ConfigurationParser()
     configParser.parse(testConfig)
-
-    assertEquals("Two appenders should be added", 2, configParser.root.appenders.size)
-    assertThat(
-        "A PrintlnAppender should be added", configParser.root.appenders.first is PrintlnAppender)
-    assertThat(
-        "A Second PrintlnAppender should be added",
-        configParser.root.appenders[1] is PrintlnAppender)
+    val root = configParser.loggers["root"]
+    assertEquals("Two appenders should be added", 2, root?.appenders?.size)
+    assertThat("A TestAppender should be added", root?.appenders?.first() is TestAppender)
+    assertThat("A Second TestAppender should be added", root?.appenders?.get(1) is TestAppender)
   }
 
   @Test
@@ -152,10 +150,9 @@ class ConfigurationParserTest {
     val configParser = ConfigurationParser()
 
     configParser.parse(testConfig)
-
-    assertEquals("One appender should be added", 1, configParser.root.appenders.size)
+    val root = configParser.loggers["root"]
+    assertEquals("One appender should be added", 1, root?.appenders?.size)
     assertThat(
-        "A RollingFileAppender should be added",
-        configParser.root.appenders.first is RollingFileAppender)
+        "A RollingFileAppender should be added", root?.appenders?.first() is RollingFileAppender)
   }
 }

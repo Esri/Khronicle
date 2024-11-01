@@ -11,6 +11,7 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.memberProperties
 import org.slf4j.event.Level
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 
 class ConfigurationParser {
   companion object {
@@ -27,7 +28,7 @@ class ConfigurationParser {
     const val TAG_LOGGER = "logger"
   }
 
-  val loggers = mutableMapOf<String, LoggerConfig>()
+  val loggers = mutableMapOf<String, LoggerConfig>().also { it["root"] = LoggerConfig() }
 
   private val parser = Xml.newPullParser()
   private val appenders = HashMap<String, Appender>()
@@ -71,7 +72,9 @@ class ConfigurationParser {
 
         val kClass =
             appenderClass?.let { Class.forName(appenderClass).kotlin }
-                ?: run { throw RuntimeException("Appender with name \"$appenderClass\" not found") }
+                ?: run {
+                  throw XmlPullParserException("Appender with name \"$appenderClass\" not found")
+                }
 
         val appender = kClass.createInstance() as Appender
 
@@ -127,8 +130,11 @@ class ConfigurationParser {
 
   private fun handleRoot() =
       handleTag(parser, TAG_ROOT) {
-        val root = LoggerConfig()
-        loggers["root"] = root
+        val root = loggers["root"]
+
+        if (root == null) {
+          throw RuntimeException("Root config should be pre-initialized")
+        }
 
         parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
 
