@@ -129,13 +129,42 @@ class ConfigurationParserTest {
   }
 
   @Test
+  fun parse_multipleLoggersAreSupported() {
+    val testConfig =
+        """
+          <configuration>
+              <appender name="TestAppender" class="com.esri.logger.appender.TestAppender"/>
+              <logger name="my.test.logger">
+                    <appender-ref ref="TestAppender" />
+              </logger>
+              <root>
+                  <appender-ref ref="TestAppender" />
+              </root>
+          </configuration>"
+      """
+            .trimIndent()
+            .byteInputStream()
+
+    val configParser = ConfigurationParser()
+    configParser.parse(testConfig)
+    val root = configParser.loggers["root"]
+    val testLogger = configParser.loggers["my.test.logger"]
+    assertEquals("Two loggers should be added", 2, configParser.loggers.size)
+    assertThat(
+        "A TestAppender should be added to the root", root?.appenders?.first() is TestAppender)
+    assertThat(
+        "A TestAppender should be added to \"my.test.logger\"",
+        testLogger?.appenders?.first() is TestAppender)
+  }
+
+  @Test
   fun parse_rollingFileAppenderGetsAddedCorrectly() {
     AndroidAPIProvider.AppContext = WeakReference(RuntimeEnvironment.getApplication())
 
     val testConfig =
         """
             <configuration>
-                <appender name="file" class="com.esri.logger.appender.RollingFileAppender">
+                <appender name="file" class="com.esri.logger.appender.RollingFileAppender" fileName="sample">
                     <encoder>
                         <pattern>arbitrary pattern</pattern>
                     </encoder>
@@ -151,8 +180,11 @@ class ConfigurationParserTest {
 
     configParser.parse(testConfig)
     val root = configParser.loggers["root"]
+    val appender = root?.appenders?.first()
     assertEquals("One appender should be added", 1, root?.appenders?.size)
+    assertThat("A RollingFileAppender should be added", appender is RollingFileAppender)
     assertThat(
-        "A RollingFileAppender should be added", root?.appenders?.first() is RollingFileAppender)
+        "File appender should have filename set",
+        (appender as RollingFileAppender).fileName == "sample")
   }
 }
