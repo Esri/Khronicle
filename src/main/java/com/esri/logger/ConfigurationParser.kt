@@ -80,22 +80,6 @@ class ConfigurationParser {
 
         appenders[appenderName] = appender
 
-        val attrs = parser.attributeCount
-        for (index in 0 until attrs) {
-          val name = parser.getAttributeName(index)
-          val value = parser.getAttributeValue(index)
-          if (name != ATTR_NAME && name != ATTR_CLASS) {
-            val property =
-                kClass.memberProperties.find { it.name == name } as? KMutableProperty1<Any, Any?>
-            if (property != null) {
-              property.set(appender, value)
-              println("Property $propertyName set to $value")
-            } else {
-              println("Property $propertyName not found")
-            }
-          }
-        }
-
         while (parser.next() != XmlPullParser.END_TAG) {
           if (parser.eventType != XmlPullParser.START_TAG) {
             continue
@@ -104,8 +88,18 @@ class ConfigurationParser {
           when (parser.name) {
             TAG_ENCODER -> handleEncoder(appender)
             else -> {
-              println("Appender found unsupported tag: ${parser.name}")
-              skip()
+              val property =
+                  kClass.memberProperties.find { it.name == parser.name }
+                      as? KMutableProperty1<Any, Any?>
+              if (property != null) {
+                val contents = readText()
+                property.set(appender, contents)
+                println("Appender property ${parser.name} set to $contents")
+                parser.next()
+              } else {
+                println("Appender property $propertyName not found")
+                skip()
+              }
             }
           }
         }

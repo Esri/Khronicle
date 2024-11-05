@@ -164,7 +164,8 @@ class ConfigurationParserTest {
     val testConfig =
         """
             <configuration>
-                <appender name="file" class="com.esri.logger.appender.RollingFileAppender" fileName="sample">
+                <appender name="file" class="com.esri.logger.appender.RollingFileAppender">
+                    <fileName>sample</fileName>
                     <encoder>
                         <pattern>arbitrary pattern</pattern>
                     </encoder>
