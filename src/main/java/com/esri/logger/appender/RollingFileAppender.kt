@@ -18,7 +18,7 @@ class RollingFileAppender : Appender {
 
   override var encoder: Encoder? = null
 
-  var fileName: String = FILENAME_DEFAULT
+  @JvmField var fileName: String = FILENAME_DEFAULT
 
   private val bufferedWriter: BufferedWriter by lazy {
     val appDir = AndroidAPIProvider.filesDir
