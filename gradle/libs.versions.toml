@@ -1,15 +1,15 @@
 [versions]
-agp = "8.6.1"
-appcompat = "1.6.1"
-coreKtx = "1.13.1"
+agp = "8.7.3"
+appcompat = "1.7.0"
+coreKtx = "1.15.0"
 espressoCore = "3.6.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-kotlin = "1.9.0"
+kotlin = "2.1.0"
 kotlinReflect = "2.0.21"
-material = "1.10.0"
+material = "1.12.0"
 mockkVersion = "1.13.9"
-robolectric = "4.13"
+robolectric = "4.14.1"
 slf4jApi = "2.0.16"
 
 [libraries]
