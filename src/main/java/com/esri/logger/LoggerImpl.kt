@@ -31,7 +31,7 @@ class LoggerImpl(private val loggerName: String) : Logger {
     val internalThrowable =
         if (throwable == null && arguments?.last() is Throwable) {
           val lastThrowable = (arguments.last() as Throwable)
-          arguments.removeLast()
+          arguments.removeAt(arguments.lastIndex)
           lastThrowable
         } else {
           throwable
