@@ -1,0 +1,23 @@
+name: khronicle
+
+on:
+  push:
+    branches:
+    - 'main'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build
+        run: ./gradlew build
+      - name: Test
+        run: ./gradlew test
