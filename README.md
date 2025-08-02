@@ -1,6 +1,8 @@
 # Khronicle
 
-An [SLF4J](https://www.slf4j.org) backend for Android. Similar to [logback-android](https://github.com/tony19/logback-android), but written in Kotlin.
+An [SLF4J](https://www.slf4j.org) backend for Android. It is a from scratch minimal implementation that will allow you to redirect log outputs coming from SLF4J into destinations such as log files or logcat.
+
+It is similar to [logback-android](https://github.com/tony19/logback-android), but written in Kotlin from scratch. The advantage for us is that we don't have to depend on another third-party right now, and it would be easy to swap it for a different backend if needed later.
 
 ## Instructions
 
