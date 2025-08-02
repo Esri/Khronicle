@@ -32,7 +32,7 @@ class RollingFileAppender : Appender {
 
   override var encoder: Encoder? = null
 
-  @JvmField var fileName: String = FILENAME_DEFAULT
+  @JvmField var file: String = FILENAME_DEFAULT
 
   private val bufferedWriter: BufferedWriter by lazy {
     val appDir = AndroidAPIProvider.filesDir
@@ -41,9 +41,9 @@ class RollingFileAppender : Appender {
       logDir.mkdir()
     }
 
-    logDir.rotateFilesInPath(fileName, EXTENSION, MAX_FILES)
+    logDir.rotateFilesInPath(file, EXTENSION, MAX_FILES)
 
-    val logFile = File("${logDir}/$fileName$EXTENSION")
+    val logFile = File("${logDir}/$file$EXTENSION")
     logFile.createNewFile()
     BufferedWriter(FileWriter(logFile))
   }

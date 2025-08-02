@@ -179,7 +179,7 @@ class ConfigurationParserTest {
         """
             <configuration>
                 <appender name="file" class="com.esri.logger.appender.RollingFileAppender">
-                    <fileName>sample</fileName>
+                    <file>sample</file>
                     <encoder>
                         <pattern>arbitrary pattern</pattern>
                     </encoder>
@@ -200,6 +200,6 @@ class ConfigurationParserTest {
     assertThat("A RollingFileAppender should be added", appender is RollingFileAppender)
     assertThat(
         "File appender should have filename set",
-        (appender as RollingFileAppender).fileName == "sample")
+        (appender as RollingFileAppender).file == "sample")
   }
 }
