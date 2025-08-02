@@ -21,3 +21,12 @@ jobs:
         run: ./gradlew build
       - name: Test
         run: ./gradlew test
+
+  xmllint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Validate xml config
+        run: xmllint --schema ./xml/logback.xsd.xml ./src/test/resources/assets/logger-config.xml

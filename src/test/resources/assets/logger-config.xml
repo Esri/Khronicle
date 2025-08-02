@@ -1,4 +1,5 @@
-<configuration>
+<?xml version="1.0"?>
+<configuration xmlns="https://tony19.github.io/logback-android/xml">
     <appender name="stdout" class="com.esri.logger.appender.TestAppender">
         <encoder>
             <pattern>%message</pattern>
