@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger.encoder
+package com.esri.logger.khronicle.encoder
 
 import java.text.SimpleDateFormat
 import java.util.Locale

@@ -12,10 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger.encoder
+package com.esri.logger.khronicle
 
-import org.slf4j.event.LoggingEvent
+import com.esri.logger.khronicle.appender.Appender
+import org.slf4j.Logger
+import org.slf4j.event.Level
 
-interface Encoder {
-  fun encode(loggingEvent: LoggingEvent): ByteArray
+class LoggerBuilder(name: String) {
+  private val logger = LoggerImpl(name)
+
+  fun setLogLevel(level: Level) = apply { logger.logLevel = level }
+
+  fun addAppender(appender: Appender) = apply { logger.appenders.add(appender) }
+
+  fun build(): Logger {
+    return logger
+  }
 }

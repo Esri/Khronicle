@@ -12,16 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger.appender
+package com.esri.logger.khronicle.encoder
 
-import com.esri.logger.encoder.Encoder
 import org.slf4j.event.LoggingEvent
 
-class TestAppender : Appender {
-  override var encoder: Encoder? = null
-  var output: ((LoggingEvent) -> Unit)? = null
-
-  override fun append(event: LoggingEvent) {
-    output?.let { it(event) }
-  }
+interface Encoder {
+  fun encode(loggingEvent: LoggingEvent): ByteArray
 }

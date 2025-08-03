@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger
+package com.esri.logger.khronicle
 
-import com.esri.logger.android.AndroidAPIProvider
-import com.esri.logger.appender.RollingFileAppender
-import com.esri.logger.appender.TestAppender
+import com.esri.logger.khronicle.android.AndroidAPIProvider
+import com.esri.logger.khronicle.appender.RollingFileAppender
+import com.esri.logger.khronicle.appender.TestAppender
 import java.lang.ref.WeakReference
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
@@ -99,7 +99,7 @@ class ConfigurationParserTest {
     val testConfig =
         """
             <configuration>
-                <appender name="TestAppender" class="com.esri.logger.appender.TestAppender">
+                <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender">
                     <encoder>
                         <pattern>${expectedPattern}</pattern>
                     </encoder>
@@ -124,7 +124,7 @@ class ConfigurationParserTest {
     val testConfig =
         """
           <configuration>
-              <appender name="TestAppender" class="com.esri.logger.appender.TestAppender"/>
+              <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender"/>
               <root>
                   <appender-ref ref="TestAppender" />
                   <appender-ref ref="TestAppender" />
@@ -147,7 +147,7 @@ class ConfigurationParserTest {
     val testConfig =
         """
           <configuration>
-              <appender name="TestAppender" class="com.esri.logger.appender.TestAppender"/>
+              <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender"/>
               <logger name="my.test.logger">
                     <appender-ref ref="TestAppender" />
               </logger>
@@ -178,7 +178,7 @@ class ConfigurationParserTest {
     val testConfig =
         """
             <configuration>
-                <appender name="file" class="com.esri.logger.appender.RollingFileAppender">
+                <appender name="file" class="com.esri.logger.khronicle.appender.RollingFileAppender">
                     <file>sample</file>
                     <encoder>
                         <pattern>arbitrary pattern</pattern>

@@ -12,20 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger
+package com.esri.logger.khronicle.appender
 
-import com.esri.logger.appender.Appender
-import org.slf4j.Logger
-import org.slf4j.event.Level
+import com.esri.logger.khronicle.encoder.Encoder
+import org.slf4j.event.LoggingEvent
 
-class LoggerBuilder(name: String) {
-  private val logger = LoggerImpl(name)
+class PrintlnAppender : Appender {
+  override var encoder: Encoder? = null
 
-  fun setLogLevel(level: Level) = apply { logger.logLevel = level }
-
-  fun addAppender(appender: Appender) = apply { logger.appenders.add(appender) }
-
-  fun build(): Logger {
-    return logger
+  override fun append(event: LoggingEvent) {
+    encoder?.let { println(it.encode(event).decodeToString()) } ?: { println(event.message) }
   }
 }

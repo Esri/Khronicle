@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger.android
+package com.esri.logger.khronicle.android
 
 import android.content.Context
 import java.io.File
