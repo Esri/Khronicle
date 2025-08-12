@@ -15,12 +15,19 @@
 package com.esri.logger
 
 import com.esri.logger.encoder.PatternEncoder
+import java.util.TimeZone
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Test
 import org.slf4j.event.Level
 import org.slf4j.helpers.BasicMarkerFactory
 
 class PatternEncoderTest {
+@Before
+  fun setUp() {
+      TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"))
+  }
+
   @Test
   fun encoder_encodesSimpleMessage() {
     val expectedMessage = "Simple message"

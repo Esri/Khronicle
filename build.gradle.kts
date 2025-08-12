@@ -28,6 +28,16 @@ android {
   testOptions { unitTests { isIncludeAndroidResources = true } }
 }
 
+tasks.withType<Test> {
+  testLogging {
+    events("passed", "skipped", "failed", "standardOut", "standardError")
+    exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    showCauses = true
+    showExceptions = true
+    showStackTraces = true
+  }
+}
+
 dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
