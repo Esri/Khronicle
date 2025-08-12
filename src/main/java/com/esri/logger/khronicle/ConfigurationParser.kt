@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger
+package com.esri.logger.khronicle
 
 import android.R.attr.propertyName
 import android.util.Xml
-import com.esri.logger.appender.Appender
-import com.esri.logger.encoder.PatternEncoder
+import com.esri.logger.khronicle.appender.Appender
+import com.esri.logger.khronicle.encoder.PatternEncoder
 import java.io.InputStream
 import java.util.LinkedList
 import kotlin.reflect.KMutableProperty1

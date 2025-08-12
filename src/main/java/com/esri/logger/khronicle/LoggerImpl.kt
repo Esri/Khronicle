@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger
+package com.esri.logger.khronicle
 
-import com.esri.logger.appender.Appender
+import com.esri.logger.khronicle.appender.Appender
 import java.util.LinkedList
 import org.slf4j.Logger
 import org.slf4j.Marker

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger.appender
+package com.esri.logger.khronicle.appender
 
-import com.esri.logger.android.AndroidAPIProvider
-import com.esri.logger.encoder.Encoder
-import com.esri.logger.rotateFilesInPath
+import com.esri.logger.khronicle.android.AndroidAPIProvider
+import com.esri.logger.khronicle.encoder.Encoder
+import com.esri.logger.khronicle.rotateFilesInPath
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter

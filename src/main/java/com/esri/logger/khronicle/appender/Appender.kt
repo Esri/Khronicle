@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.esri.logger.appender
+package com.esri.logger.khronicle.appender
 
-import com.esri.logger.encoder.Encoder
+import com.esri.logger.khronicle.encoder.Encoder
 import org.slf4j.event.LoggingEvent
 
 interface Appender {

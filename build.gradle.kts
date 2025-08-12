@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-  namespace = "com.esri.logger"
+  namespace = "com.esri.logger.khronicle"
   compileSdk = 35
 
   defaultConfig {
