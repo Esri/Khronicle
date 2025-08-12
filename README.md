@@ -17,7 +17,7 @@ Logging appenders are created via reflection so class names must be left  intact
 order to keep them you will need to add the following to your application proguard rules:
 
 ```
--keep class com.esri.logger.appender.** { *; }
+-keep class com.esri.logger.khronicle.appender.** { *; }
 ```
 
 ## Requirements
