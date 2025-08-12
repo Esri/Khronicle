@@ -28,5 +28,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Install tools
+        run: sudo apt-get install -y libxml2-utils
       - name: Validate xml config
         run: xmllint --schema ./xml/logback.xsd.xml ./src/test/resources/assets/logger-config.xml
