@@ -12,6 +12,7 @@ on:
 
 jobs:
   build:
+    if: github.event_name != 'release'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -21,12 +22,30 @@ jobs:
         run: ./gradlew build
       - name: Test
         run: ./gradlew test
+
+  deploy:
+    if: github.event_name == 'release' && github.event.action == 'created'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Validate version
+        id: version
+        run: |
+          set -o pipefail
+          tag_name="${{ github.ref_name }}"
+          python ./tools/version_validator.py "$tag_name"
+          echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
+      - name: Build
+        run: ./gradlew -PVERSION=${{ steps.version.outputs.tag_name }} build
+      - name: Test
+        run: ./gradlew -PVERSION=${{ steps.version.outputs.tag_name }} test
       - name: Publish (Maven)
-        #if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
         run: |
             echo -n "${{ secrets.MAVEN_SIGNING_KEY }}" | base64 --decode | gpg --import
-            ./gradlew -PcentralUsername=${{ secrets.CENTRAL_USERNAME }} -PcentralPassword=${{ secrets.CENTRAL_PASSWORD }} publish
-            ./gradlew -PcentralUsername=${{ secrets.CENTRAL_USERNAME }} -PcentralPassword=${{ secrets.CENTRAL_PASSWORD }} jreleaserDeploy
+            ./gradlew -PVERSION=${{ steps.version.outputs.tag_name }} -PcentralUsername=${{ secrets.CENTRAL_USERNAME }} -PcentralPassword=${{ secrets.CENTRAL_PASSWORD }} publish
+            ./gradlew -PVERSION=${{ steps.version.outputs.tag_name }} -PcentralUsername=${{ secrets.CENTRAL_USERNAME }} -PcentralPassword=${{ secrets.CENTRAL_PASSWORD }} jreleaserDeploy
 
   xmllint:
     runs-on: ubuntu-24.04
