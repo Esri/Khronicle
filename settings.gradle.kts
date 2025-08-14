@@ -14,4 +14,4 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "logger-android"
+rootProject.name = "khronicle"
