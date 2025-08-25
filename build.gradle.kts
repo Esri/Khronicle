@@ -31,7 +31,7 @@ android {
     // The version must be of the form "X.Y.Z[-b][-SNAPSHOT]"
     version =
       if (project.hasProperty("VERSION")) project.property("VERSION").toString()
-      else "1.0.0-SNAPSHOT"
+      else "1.0.1-SNAPSHOT"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
