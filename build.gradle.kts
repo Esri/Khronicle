@@ -22,7 +22,7 @@ try {
 
 android {
   namespace = "com.esri.logger.khronicle"
-  compileSdk = 35
+  compileSdk = 36
 
   defaultConfig {
     minSdk = 24
