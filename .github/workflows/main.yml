@@ -54,6 +54,6 @@ jobs:
         with:
           submodules: recursive
       - name: Install tools
-        run: sudo apt-get install -y libxml2-utils
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
       - name: Validate xml config
         run: xmllint --schema ./xml/logback.xsd.xml ./src/test/resources/assets/logger-config.xml
