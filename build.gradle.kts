@@ -1,6 +1,7 @@
 import java.util.Properties
 import java.io.FileInputStream
 import java.io.IOException
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.android.library)
@@ -45,12 +46,18 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  kotlinOptions { jvmTarget = "17" }
+  
   testOptions { unitTests { isIncludeAndroidResources = true } }
 
   publishing {
     singleVariant("release") {}
   }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
 
 tasks.withType<Test> {
