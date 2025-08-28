@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import java.util.Properties
 import java.io.FileInputStream
 import java.io.IOException
@@ -5,6 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.android.library)
+  alias(libs.plugins.detekt)
   alias(libs.plugins.jetbrains.kotlin.android)
   alias(libs.plugins.jreleaser)
   `maven-publish`
@@ -57,6 +59,18 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
+
+detekt {
+    config.setFrom("$projectDir/config/detekt.yml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
     }
 }
 
