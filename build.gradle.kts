@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.detekt)
+  alias(libs.plugins.diffplug.spotless)
   alias(libs.plugins.jetbrains.kotlin.android)
   alias(libs.plugins.jreleaser)
   `maven-publish`
@@ -59,6 +60,18 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
+
+spotless {
+    kotlin {
+        target("**/*.kts", "**/*.kt")
+        // Versions can be monitored: https://github.com/facebook/ktfmt/releases
+        ktfmt("0.58")
+    }
+    json {
+        target("**/*.json")
+        gson().indentWithSpaces(4)
     }
 }
 
