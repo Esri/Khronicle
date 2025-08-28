@@ -1,0 +1,15 @@
+apply plugin: 'com.diffplug.spotless'
+
+spotless {
+    kotlin {
+        target("**/*.kts", "**/*.kt")
+        // Versions can be monitored: https://github.com/facebook/ktfmt/releases
+        ktfmt("0.58")
+    }
+    json {
+        target("**/*.json")
+        gson().indentWithSpaces(4)
+    }
+}
+
+
