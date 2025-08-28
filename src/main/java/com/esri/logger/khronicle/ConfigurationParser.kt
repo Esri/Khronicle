@@ -60,7 +60,7 @@ class ConfigurationParser {
       handleTag(parser, TAG_CONFIGURATION) {
         while (parser.next() != XmlPullParser.END_TAG) {
           if (parser.eventType == XmlPullParser.END_DOCUMENT) {
-            throw RuntimeException("Invalid config file!")
+            error("Invalid config file!")
           }
 
           if (parser.eventType != XmlPullParser.START_TAG) {
@@ -102,9 +102,10 @@ class ConfigurationParser {
           when (parser.name) {
             TAG_ENCODER -> handleEncoder(appender)
             else -> {
-              val property =
-                  kClass.memberProperties.find { it.name == parser.name }
-                      as? KMutableProperty1<Any, Any?>
+              val property = kClass.memberProperties
+                .filterIsInstance<KMutableProperty1<Any, Any?>>()
+                .find { it.name == parser.name }
+
               if (property != null) {
                 val contents = readText()
                 property.set(appender, contents)
@@ -138,10 +139,8 @@ class ConfigurationParser {
 
   private fun handleRoot() =
       handleTag(parser, TAG_ROOT) {
-        val root = loggers["root"]
-
-        if (root == null) {
-          throw RuntimeException("Root config should be pre-initialized")
+        val root = checkNotNull(loggers["root"]) {
+          "Root config should be pre-initialized"
         }
 
         parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
@@ -165,12 +164,12 @@ class ConfigurationParser {
 
   private fun handleLogger() =
       handleTag(parser, TAG_LOGGER) {
-        val logger =
-            parser.getAttributeValue(null, ATTR_NAME)?.let { name ->
-              val logger = LoggerConfig()
-              loggers[name] = logger
-              logger
-            } ?: run { throw Exception("Logger configuration requires name attribute") }
+        val name = requireNotNull(parser.getAttributeValue(null, ATTR_NAME)) {
+          "Logger configuration requires name attribute"
+        }
+        val logger = LoggerConfig()
+        loggers[name] = logger
+
         parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> logger.setLevel(level) }
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -210,8 +209,8 @@ class ConfigurationParser {
   }
 
   private fun skip() {
-    if (parser.eventType != XmlPullParser.START_TAG) {
-      throw IllegalStateException()
+    check(parser.eventType == XmlPullParser.START_TAG) {
+      "The element must start with a START_TAG"
     }
 
     var depth = 1

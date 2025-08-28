@@ -35,8 +35,8 @@ class ServiceProviderTest {
 
     val logger = LoggerFactory.getLogger("testLogger")
     val loggerImpl = logger as LoggerImpl
-    assert(loggerImpl.appenders.first is TestAppender)
-    val testAppender = loggerImpl.appenders.first as TestAppender
+    assert(loggerImpl.appenders.first() is TestAppender)
+    val testAppender = loggerImpl.appenders.first() as TestAppender
     lateinit var output: String
     testAppender.output = { event -> output = event.message }
 

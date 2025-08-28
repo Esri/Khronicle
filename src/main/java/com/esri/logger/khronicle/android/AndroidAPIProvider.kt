@@ -18,12 +18,9 @@ import android.content.Context
 import java.io.File
 import java.lang.ref.WeakReference
 
-class AndroidAPIProvider {
+object AndroidAPIProvider {
+  var AppContext: WeakReference<Context?> = WeakReference(null)
 
-  companion object {
-    var AppContext: WeakReference<Context?> = WeakReference(null)
-
-    val filesDir: File?
-      get() = AppContext.get()?.filesDir
-  }
+  val filesDir: File?
+    get() = AppContext.get()?.filesDir
 }

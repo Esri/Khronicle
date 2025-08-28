@@ -23,9 +23,9 @@ class LoggerFactory : ILoggerFactory {
 
   override fun getLogger(name: String): Logger {
     return loggers.getOrElse(name) {
-      loggers["root"]
-          ?: throw RuntimeException(
-              "The root logger should have been prepared at initialization time. This should never happen.")
+      checkNotNull(loggers["root"]) {
+        "The root logger should have been prepared at initialization time. This should never happen."
+      }
     }
   }
 
