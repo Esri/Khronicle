@@ -18,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Check style
+        run: ./gradlew spotlessCheck
       - name: Build
         run: ./gradlew build
       - name: Test
@@ -37,6 +39,8 @@ jobs:
           tag_name="${{ github.ref_name }}"
           python ./tools/version_validator.py "$tag_name"
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
+      - name: Check style
+        run: ./gradlew spotlessCheck
       - name: Build
         run: ./gradlew -PVERSION=${{ steps.version.outputs.tag_name }} build
       - name: Test
