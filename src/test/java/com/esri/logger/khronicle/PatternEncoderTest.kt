@@ -1,11 +1,11 @@
 // Copyright 2025 Esri
-// 
+//
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,9 +23,9 @@ import org.slf4j.event.Level
 import org.slf4j.helpers.BasicMarkerFactory
 
 class PatternEncoderTest {
-@Before
+  @Before
   fun setUp() {
-      TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"))
+    TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"))
   }
 
   @Test
@@ -43,7 +43,8 @@ class PatternEncoderTest {
     assertEquals(
         "The decoded message should be equal to the encoded message",
         expectedMessage,
-        encodedString)
+        encodedString,
+    )
   }
 
   @Test
@@ -60,7 +61,10 @@ class PatternEncoderTest {
     val encodedString = encoder.encode(loggingEvent).decodeToString()
 
     assertEquals(
-        "The argument should be encoded as \"$expectedArg\"", "Hello, $expectedArg!", encodedString)
+        "The argument should be encoded as \"$expectedArg\"",
+        "Hello, $expectedArg!",
+        encodedString,
+    )
   }
 
   @Test
@@ -80,7 +84,8 @@ class PatternEncoderTest {
     assertEquals(
         "The arguments should be encoded as \"$expectedArg1\" and \"$expectedArg2\"",
         "Hello, $expectedArg1-$expectedArg2!",
-        encodedString)
+        encodedString,
+    )
   }
 
   @Test
@@ -101,7 +106,8 @@ class PatternEncoderTest {
     assertEquals(
         "The arguments should be encoded as \"$expectedArg1\", \"$expectedArg2\" and \"$expectedArg3\"",
         "Hello, $expectedArg1-$expectedArg2-$expectedArg3!",
-        encodedString)
+        encodedString,
+    )
   }
 
   @Test
@@ -151,7 +157,8 @@ class PatternEncoderTest {
     assertEquals(
         "The throwable should be auto appended at the end of the message",
         "Hello!\n${throwable}",
-        encodedString)
+        encodedString,
+    )
   }
 
   @Test
@@ -170,7 +177,8 @@ class PatternEncoderTest {
     assertEquals(
         "The timestamp should be encoded as [10-11-2024 12:49:22,123]",
         "10-11-2024 12:49:22,123 Hello!",
-        encodedString)
+        encodedString,
+    )
   }
 
   @Test
@@ -187,6 +195,9 @@ class PatternEncoderTest {
     val encodedString = encoder.encode(loggingEvent).decodeToString()
 
     assertEquals(
-        "The timestamp should be encoded as 1234567890", "1234567890 Hello!", encodedString)
+        "The timestamp should be encoded as 1234567890",
+        "1234567890 Hello!",
+        encodedString,
+    )
   }
 }

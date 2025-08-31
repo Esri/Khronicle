@@ -1,11 +1,11 @@
 // Copyright 2025 Esri
-// 
+//
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -102,9 +102,10 @@ class ConfigurationParser {
           when (parser.name) {
             TAG_ENCODER -> handleEncoder(appender)
             else -> {
-              val property = kClass.memberProperties
-                .filterIsInstance<KMutableProperty1<Any, Any?>>()
-                .find { it.name == parser.name }
+              val property =
+                  kClass.memberProperties.filterIsInstance<KMutableProperty1<Any, Any?>>().find {
+                    it.name == parser.name
+                  }
 
               if (property != null) {
                 val contents = readText()
@@ -139,9 +140,7 @@ class ConfigurationParser {
 
   private fun handleRoot() =
       handleTag(parser, TAG_ROOT) {
-        val root = checkNotNull(loggers["root"]) {
-          "Root config should be pre-initialized"
-        }
+        val root = checkNotNull(loggers["root"]) { "Root config should be pre-initialized" }
 
         parser.getAttributeValue(null, ATTR_LEVEL)?.let { level -> root.setLevel(level) }
 
@@ -164,9 +163,10 @@ class ConfigurationParser {
 
   private fun handleLogger() =
       handleTag(parser, TAG_LOGGER) {
-        val name = requireNotNull(parser.getAttributeValue(null, ATTR_NAME)) {
-          "Logger configuration requires name attribute"
-        }
+        val name =
+            requireNotNull(parser.getAttributeValue(null, ATTR_NAME)) {
+              "Logger configuration requires name attribute"
+            }
         val logger = LoggerConfig()
         loggers[name] = logger
 
@@ -209,9 +209,7 @@ class ConfigurationParser {
   }
 
   private fun skip() {
-    check(parser.eventType == XmlPullParser.START_TAG) {
-      "The element must start with a START_TAG"
-    }
+    check(parser.eventType == XmlPullParser.START_TAG) { "The element must start with a START_TAG" }
 
     var depth = 1
     while (depth != 0) {

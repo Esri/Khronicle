@@ -1,11 +1,11 @@
 // Copyright 2025 Esri
-// 
+//
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ class LoggerImpl(private val loggerName: String) : Logger {
       format: String?,
       arguments: MutableList<Any?>? = null,
       marker: Marker? = null,
-      throwable: Throwable? = null
+      throwable: Throwable? = null,
   ) {
     if (format == null) return
     if (level > logLevel) return
@@ -98,14 +98,16 @@ class LoggerImpl(private val loggerName: String) : Logger {
           level = Level.TRACE,
           format = format,
           marker = marker,
-          arguments = mutableListOf(arg1, arg2))
+          arguments = mutableListOf(arg1, arg2),
+      )
 
   override fun trace(marker: Marker?, format: String?, vararg arguments: Any?) =
       log(
           level = Level.TRACE,
           format = format,
           marker = marker,
-          arguments = arguments.toMutableList())
+          arguments = arguments.toMutableList(),
+      )
 
   override fun trace(marker: Marker?, msg: String?, t: Throwable?) =
       log(level = Level.TRACE, format = msg, marker = marker, throwable = t)
@@ -144,14 +146,16 @@ class LoggerImpl(private val loggerName: String) : Logger {
           level = Level.DEBUG,
           format = format,
           marker = marker,
-          arguments = mutableListOf(arg1, arg2))
+          arguments = mutableListOf(arg1, arg2),
+      )
 
   override fun debug(marker: Marker?, format: String?, vararg arguments: Any?) =
       log(
           level = Level.DEBUG,
           format = format,
           marker = marker,
-          arguments = arguments.toMutableList())
+          arguments = arguments.toMutableList(),
+      )
 
   override fun debug(marker: Marker?, msg: String?, t: Throwable?) =
       log(level = Level.DEBUG, format = msg, marker = marker, throwable = t)
@@ -190,14 +194,16 @@ class LoggerImpl(private val loggerName: String) : Logger {
           level = Level.INFO,
           format = format,
           marker = marker,
-          arguments = mutableListOf(arg1, arg2))
+          arguments = mutableListOf(arg1, arg2),
+      )
 
   override fun info(marker: Marker?, format: String?, vararg arguments: Any?) =
       log(
           level = Level.INFO,
           format = format,
           marker = marker,
-          arguments = arguments.toMutableList())
+          arguments = arguments.toMutableList(),
+      )
 
   override fun info(marker: Marker?, msg: String?, t: Throwable?) =
       log(level = Level.INFO, format = msg, marker = marker, throwable = t)
@@ -236,14 +242,16 @@ class LoggerImpl(private val loggerName: String) : Logger {
           level = Level.WARN,
           format = format,
           marker = marker,
-          arguments = mutableListOf(arg1, arg2))
+          arguments = mutableListOf(arg1, arg2),
+      )
 
   override fun warn(marker: Marker?, format: String?, vararg arguments: Any?) =
       log(
           level = Level.WARN,
           format = format,
           marker = marker,
-          arguments = arguments.toMutableList())
+          arguments = arguments.toMutableList(),
+      )
 
   override fun warn(marker: Marker?, msg: String?, t: Throwable?) =
       log(level = Level.WARN, format = msg, marker = marker, throwable = t)
@@ -282,14 +290,16 @@ class LoggerImpl(private val loggerName: String) : Logger {
           level = Level.ERROR,
           format = format,
           marker = marker,
-          arguments = mutableListOf(arg1, arg2))
+          arguments = mutableListOf(arg1, arg2),
+      )
 
   override fun error(marker: Marker?, format: String?, vararg arguments: Any?) =
       log(
           level = Level.ERROR,
           format = format,
           marker = marker,
-          arguments = arguments.toMutableList())
+          arguments = arguments.toMutableList(),
+      )
 
   override fun error(marker: Marker?, msg: String?, t: Throwable?) =
       log(level = Level.ERROR, format = msg, marker = marker, throwable = t)

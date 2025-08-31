@@ -1,7 +1,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
-import java.util.Properties
 import java.io.FileInputStream
 import java.io.IOException
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -18,10 +18,12 @@ val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 
 try {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+  keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 } catch (ignored: IOException) {
-    if (project.hasProperty("centralUsername")) keystoreProperties["centralUsername"] = property("centralUsername")
-    if (project.hasProperty("centralPassword")) keystoreProperties["centralPassword"] = property("centralPassword")
+  if (project.hasProperty("centralUsername"))
+      keystoreProperties["centralUsername"] = property("centralUsername")
+  if (project.hasProperty("centralPassword"))
+      keystoreProperties["centralPassword"] = property("centralPassword")
 }
 
 android {
@@ -34,8 +36,8 @@ android {
 
     // The version must be of the form "X.Y.Z[-b][-SNAPSHOT]"
     version =
-      if (project.hasProperty("VERSION")) project.property("VERSION").toString()
-      else "1.0.1-SNAPSHOT"
+        if (project.hasProperty("VERSION")) project.property("VERSION").toString()
+        else "1.0.1-SNAPSHOT"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -49,42 +51,34 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-  
+
   testOptions { unitTests { isIncludeAndroidResources = true } }
 
-  publishing {
-    singleVariant("release") {}
+  publishing { singleVariant("release") {} }
+}
+
+kotlin { compilerOptions { jvmTarget.set(JvmTarget.JVM_17) } }
+
+spotless {
+  kotlin {
+    target("**/*.kts", "**/*.kt")
+    // Versions can be monitored: https://github.com/facebook/ktfmt/releases
+    ktfmt("0.58")
+  }
+  json {
+    target("**/*.json")
+    gson().indentWithSpaces(4)
   }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
-}
-
-spotless {
-    kotlin {
-        target("**/*.kts", "**/*.kt")
-        // Versions can be monitored: https://github.com/facebook/ktfmt/releases
-        ktfmt("0.58")
-    }
-    json {
-        target("**/*.json")
-        gson().indentWithSpaces(4)
-    }
-}
-
-detekt {
-    config.setFrom("$projectDir/config/detekt.yml")
-}
+detekt { config.setFrom("$projectDir/config/detekt.yml") }
 
 tasks.withType<Detekt>().configureEach {
-    reports {
-        html.required.set(true)
-        sarif.required.set(true)
-        md.required.set(true)
-    }
+  reports {
+    html.required.set(true)
+    sarif.required.set(true)
+    md.required.set(true)
+  }
 }
 
 tasks.withType<Test> {
@@ -112,98 +106,94 @@ dependencies {
   androidTestImplementation(libs.androidx.espresso.core)
 }
 
-if (keystoreProperties.containsKey("centralUsername") && keystoreProperties.containsKey("centralPassword")) {
-    afterEvaluate {
-        publishing {
-            publications {
-                create<MavenPublication>("release") {
-                    from(components["release"])
+if (
+    keystoreProperties.containsKey("centralUsername") &&
+        keystoreProperties.containsKey("centralPassword")
+) {
+  afterEvaluate {
+    publishing {
+      publications {
+        create<MavenPublication>("release") {
+          from(components["release"])
 
-                    pom {
-                        name = "Khronicle"
-                        packaging = "aar"
-                        description = "An SLF4J backend for Android."
-                        url = "https://github.com/esri/khronicle"
+          pom {
+            name = "Khronicle"
+            packaging = "aar"
+            description = "An SLF4J backend for Android."
+            url = "https://github.com/esri/khronicle"
 
-                        scm {
-                        connection = "scm:git:https://github.com/esri/khronicle"
-                        developerConnection = "scm:git:https://github.com/esri/khronicle"
-                        url = "https://github.com/esri/khronicle"
-                        }
-
-                        licenses {
-                            license {
-                                name = "Apache License 2.0"
-                                url = "https://spdx.org/licenses/Apache-2.0.html"
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id = "award"
-                                name = "Adam Ward"
-                                email = "award@esri.com"
-                            }
-                            developer {
-                                id = "jonasvautherin"
-                                name = "Jonas Vautherin"
-                                email = "jvautherin@esri.com"
-                            }
-                        }
-                    }
-                }
+            scm {
+              connection = "scm:git:https://github.com/esri/khronicle"
+              developerConnection = "scm:git:https://github.com/esri/khronicle"
+              url = "https://github.com/esri/khronicle"
             }
-            repositories {
-                maven {
-                   url = uri(layout.buildDirectory.dir("target/staging-deploy"))
-                }
+
+            licenses {
+              license {
+                name = "Apache License 2.0"
+                url = "https://spdx.org/licenses/Apache-2.0.html"
+              }
             }
+
+            developers {
+              developer {
+                id = "award"
+                name = "Adam Ward"
+                email = "award@esri.com"
+              }
+              developer {
+                id = "jonasvautherin"
+                name = "Jonas Vautherin"
+                email = "jvautherin@esri.com"
+              }
+            }
+          }
         }
+      }
+      repositories { maven { url = uri(layout.buildDirectory.dir("target/staging-deploy")) } }
     }
+  }
 
-    jreleaser {
-        signing {
-            setActive("ALWAYS")
-            armored.set(true)
-            setMode("COMMAND")
+  jreleaser {
+    signing {
+      setActive("ALWAYS")
+      armored.set(true)
+      setMode("COMMAND")
 
-            command {
-                keyName.set("C8B1511EF991537875A649517D5F7A7C9542C299")
-            }
-        }
-        deploy {
-            release {
-                github {
-                    skipRelease = true
-                    skipTag = true
-                }
-            }
-            maven {
-                mavenCentral {
-                    create("sonatype") {
-                        verifyPom = false
-                        setActive("RELEASE")
-                        username = keystoreProperties["centralUsername"] as String
-                        password = keystoreProperties["centralPassword"] as String
-                        url = "https://central.sonatype.com/api/v1/publisher"
-                        stagingRepository("build/target/staging-deploy")
-                    }
-                }
-                nexus2 {
-                    create("snapshot-deploy") {
-                        verifyPom = false
-                        setActive("SNAPSHOT")
-                        snapshotUrl.set("https://central.sonatype.com/repository/maven-snapshots")
-                        url = "https://central.sonatype.com/repository/maven-snapshots"
-                        applyMavenCentralRules = true
-                        snapshotSupported = true
-                        username = keystoreProperties["centralUsername"] as String
-                        password = keystoreProperties["centralPassword"] as String
-                        stagingRepository("build/target/staging-deploy")
-                    }
-                }
-            }
-        }
+      command { keyName.set("C8B1511EF991537875A649517D5F7A7C9542C299") }
     }
+    deploy {
+      release {
+        github {
+          skipRelease = true
+          skipTag = true
+        }
+      }
+      maven {
+        mavenCentral {
+          create("sonatype") {
+            verifyPom = false
+            setActive("RELEASE")
+            username = keystoreProperties["centralUsername"] as String
+            password = keystoreProperties["centralPassword"] as String
+            url = "https://central.sonatype.com/api/v1/publisher"
+            stagingRepository("build/target/staging-deploy")
+          }
+        }
+        nexus2 {
+          create("snapshot-deploy") {
+            verifyPom = false
+            setActive("SNAPSHOT")
+            snapshotUrl.set("https://central.sonatype.com/repository/maven-snapshots")
+            url = "https://central.sonatype.com/repository/maven-snapshots"
+            applyMavenCentralRules = true
+            snapshotSupported = true
+            username = keystoreProperties["centralUsername"] as String
+            password = keystoreProperties["centralPassword"] as String
+            stagingRepository("build/target/staging-deploy")
+          }
+        }
+      }
+    }
+  }
 }
-
