@@ -1,11 +1,11 @@
 // Copyright 2025 Esri
-// 
+//
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -97,7 +97,10 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be one argument", 1, event.arguments.size)
       assertEquals(
-          "The argument should be \"$expectedArgument\"", expectedArgument, event.arguments.first())
+          "The argument should be \"$expectedArgument\"",
+          expectedArgument,
+          event.arguments.first(),
+      )
     }
     logger.appenders.add(appender)
 
@@ -117,9 +120,15 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be two arguments", 2, event.arguments.size)
       assertEquals(
-          "The first argument should be \"$expectedArg1\"", expectedArg1, event.arguments.first())
+          "The first argument should be \"$expectedArg1\"",
+          expectedArg1,
+          event.arguments.first(),
+      )
       assertEquals(
-          "The second argument should be \"$expectedArg2\"", expectedArg2, event.arguments[1])
+          "The second argument should be \"$expectedArg2\"",
+          expectedArg2,
+          event.arguments[1],
+      )
     }
     logger.appenders.add(appender)
 
@@ -141,9 +150,13 @@ class LoggerImplTest {
       assertEquals(
           "There should be one argument after throwable is moved to its expected param",
           1,
-          event.arguments.size)
+          event.arguments.size,
+      )
       assertEquals(
-          "The first argument should be \"$expectedArg1\"", expectedArg1, event.arguments.first())
+          "The first argument should be \"$expectedArg1\"",
+          expectedArg1,
+          event.arguments.first(),
+      )
       assertEquals("Throwable should be \"$expectedArg2\"", expectedArg2, event.throwable)
     }
     logger.appenders.add(appender)
@@ -165,11 +178,20 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be three arguments", 3, event.arguments.size)
       assertEquals(
-          "The first argument should be \"$expectedArg1\"", expectedArg1, event.arguments.first())
+          "The first argument should be \"$expectedArg1\"",
+          expectedArg1,
+          event.arguments.first(),
+      )
       assertEquals(
-          "The second argument should be \"$expectedArg2\"", expectedArg2, event.arguments[1])
+          "The second argument should be \"$expectedArg2\"",
+          expectedArg2,
+          event.arguments[1],
+      )
       assertEquals(
-          "The third argument should be \"$expectedArg3\"", expectedArg3, event.arguments[2])
+          "The third argument should be \"$expectedArg3\"",
+          expectedArg3,
+          event.arguments[2],
+      )
     }
     logger.appenders.add(appender)
 
@@ -192,11 +214,18 @@ class LoggerImplTest {
       assertEquals(
           "There should be two arguments after throwable is moved to its expected param",
           2,
-          event.arguments.size)
+          event.arguments.size,
+      )
       assertEquals(
-          "The first argument should be \"$expectedArg1\"", expectedArg1, event.arguments.first())
+          "The first argument should be \"$expectedArg1\"",
+          expectedArg1,
+          event.arguments.first(),
+      )
       assertEquals(
-          "The second argument should be \"$expectedArg2\"", expectedArg2, event.arguments[1])
+          "The second argument should be \"$expectedArg2\"",
+          expectedArg2,
+          event.arguments[1],
+      )
       assertEquals("Throwable should be \"$expectedArg3\"", expectedArg3, event.throwable)
     }
     logger.appenders.add(appender)
@@ -215,7 +244,10 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be one argument", 1, event.arguments.size)
       assertEquals(
-          "The appender should be passed as an argument", appender, event.arguments.first())
+          "The appender should be passed as an argument",
+          appender,
+          event.arguments.first(),
+      )
     }
     logger.appenders.add(appender)
 
@@ -308,7 +340,10 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be one argument", 1, event.arguments.size)
       assertEquals(
-          "The argument should be \"$expectedArgument\"", expectedArgument, event.arguments.first())
+          "The argument should be \"$expectedArgument\"",
+          expectedArgument,
+          event.arguments.first(),
+      )
       assertTrue("Marker should be passed to the appender", event.markers.contains(marker))
     }
     logger.appenders.add(appender)
@@ -330,9 +365,15 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be two arguments", 2, event.arguments.size)
       assertEquals(
-          "The first argument should be \"$expectedArg1\"", expectedArg1, event.arguments.first())
+          "The first argument should be \"$expectedArg1\"",
+          expectedArg1,
+          event.arguments.first(),
+      )
       assertEquals(
-          "The second argument should be \"$expectedArg2\"", expectedArg2, event.arguments[1])
+          "The second argument should be \"$expectedArg2\"",
+          expectedArg2,
+          event.arguments[1],
+      )
       assertTrue("Marker should be passed to the appender", event.markers.contains(marker))
     }
     logger.appenders.add(appender)
@@ -355,11 +396,20 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be three arguments", 3, event.arguments.size)
       assertEquals(
-          "The first argument should be \"$expectedArg1\"", expectedArg1, event.arguments.first())
+          "The first argument should be \"$expectedArg1\"",
+          expectedArg1,
+          event.arguments.first(),
+      )
       assertEquals(
-          "The second argument should be \"$expectedArg2\"", expectedArg2, event.arguments[1])
+          "The second argument should be \"$expectedArg2\"",
+          expectedArg2,
+          event.arguments[1],
+      )
       assertEquals(
-          "The third argument should be \"$expectedArg3\"", expectedArg3, event.arguments[2])
+          "The third argument should be \"$expectedArg3\"",
+          expectedArg3,
+          event.arguments[2],
+      )
       assertTrue("Marker should be passed to the appender", event.markers.contains(marker))
     }
     logger.appenders.add(appender)
@@ -379,7 +429,10 @@ class LoggerImplTest {
     appender.output = { event ->
       assertEquals("There should be one argument", 1, event.arguments.size)
       assertEquals(
-          "The appender should be passed as an argument", appender, event.arguments.first())
+          "The appender should be passed as an argument",
+          appender,
+          event.arguments.first(),
+      )
       assertTrue("Marker should be passed to the appender", event.markers.contains(marker))
     }
     logger.appenders.add(appender)

@@ -1,11 +1,11 @@
 // Copyright 2025 Esri
-// 
+//
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -65,7 +65,8 @@ class ConfigurationParserTest {
     assertEquals(
         "The logging level should default to ${LoggerConfig.DEFAULT_LEVEL}",
         LoggerConfig.DEFAULT_LEVEL,
-        root?.level)
+        root?.level,
+    )
     assertEquals("No appender should be added", 0, root?.appenders?.size)
   }
 
@@ -80,7 +81,8 @@ class ConfigurationParserTest {
     assertEquals(
         "The logging level should default to ${LoggerConfig.DEFAULT_LEVEL}",
         LoggerConfig.DEFAULT_LEVEL,
-        root?.level)
+        root?.level,
+    )
   }
 
   @Test
@@ -123,14 +125,14 @@ class ConfigurationParserTest {
   fun parse_multipleAppendersAreSupported() {
     val testConfig =
         """
-          <configuration>
-              <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender"/>
-              <root>
-                  <appender-ref ref="TestAppender" />
-                  <appender-ref ref="TestAppender" />
-              </root>
-          </configuration>"
-      """
+            <configuration>
+                <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender"/>
+                <root>
+                    <appender-ref ref="TestAppender" />
+                    <appender-ref ref="TestAppender" />
+                </root>
+            </configuration>"
+        """
             .trimIndent()
             .byteInputStream()
 
@@ -146,16 +148,16 @@ class ConfigurationParserTest {
   fun parse_multipleLoggersAreSupported() {
     val testConfig =
         """
-          <configuration>
-              <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender"/>
-              <logger name="my.test.logger">
+            <configuration>
+                <appender name="TestAppender" class="com.esri.logger.khronicle.appender.TestAppender"/>
+                <logger name="my.test.logger">
+                      <appender-ref ref="TestAppender" />
+                </logger>
+                <root>
                     <appender-ref ref="TestAppender" />
-              </logger>
-              <root>
-                  <appender-ref ref="TestAppender" />
-              </root>
-          </configuration>"
-      """
+                </root>
+            </configuration>"
+        """
             .trimIndent()
             .byteInputStream()
 
@@ -165,10 +167,13 @@ class ConfigurationParserTest {
     val testLogger = configParser.loggers["my.test.logger"]
     assertEquals("Two loggers should be added", 2, configParser.loggers.size)
     assertThat(
-        "A TestAppender should be added to the root", root?.appenders?.first() is TestAppender)
+        "A TestAppender should be added to the root",
+        root?.appenders?.first() is TestAppender,
+    )
     assertThat(
         "A TestAppender should be added to \"my.test.logger\"",
-        testLogger?.appenders?.first() is TestAppender)
+        testLogger?.appenders?.first() is TestAppender,
+    )
   }
 
   @Test
@@ -200,6 +205,7 @@ class ConfigurationParserTest {
     assertThat("A RollingFileAppender should be added", appender is RollingFileAppender)
     assertThat(
         "File appender should have filename set",
-        (appender as RollingFileAppender).file == "sample")
+        (appender as RollingFileAppender).file == "sample",
+    )
   }
 }

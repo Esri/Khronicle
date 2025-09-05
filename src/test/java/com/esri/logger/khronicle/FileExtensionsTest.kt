@@ -1,11 +1,11 @@
 // Copyright 2025 Esri
-// 
+//
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -165,22 +165,28 @@ class FileExtensionsTest {
 
     assertThat(
         "File name expected to pass regex matcher",
-        File("log.txt").matchesNumberedFilePattern(filename, extension))
+        File("log.txt").matchesNumberedFilePattern(filename, extension),
+    )
     assertThat(
         "File name expected to pass regex matcher",
-        File("log1.txt").matchesNumberedFilePattern(filename, extension))
+        File("log1.txt").matchesNumberedFilePattern(filename, extension),
+    )
 
     assertThat(
         "File name expected to not pass regex matcher",
-        File("notlog.txt").matchesNumberedFilePattern(filename, extension) == false)
+        File("notlog.txt").matchesNumberedFilePattern(filename, extension) == false,
+    )
     assertThat(
         "File name expected to not pass regex matcher",
-        File("lognot.txt").matchesNumberedFilePattern(filename, extension) == false)
+        File("lognot.txt").matchesNumberedFilePattern(filename, extension) == false,
+    )
     assertThat(
         "File name expected to not pass regex matcher",
-        File("log.txtnot").matchesNumberedFilePattern(filename, extension) == false)
+        File("log.txtnot").matchesNumberedFilePattern(filename, extension) == false,
+    )
     assertThat(
         "File name expected to not pass regex matcher",
-        File("log.nottxt").matchesNumberedFilePattern(filename, extension) == false)
+        File("log.nottxt").matchesNumberedFilePattern(filename, extension) == false,
+    )
   }
 }
