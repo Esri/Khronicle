@@ -43,7 +43,7 @@ class LoggerImpl(private val loggerName: String) : Logger {
     if (level > logLevel) return
 
     val internalThrowable =
-        if (throwable == null && arguments?.last() is Throwable) {
+        if (throwable == null && arguments?.lastOrNull() is Throwable) {
           val lastThrowable = (arguments.last() as Throwable)
           arguments.removeAt(arguments.lastIndex)
           lastThrowable

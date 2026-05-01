@@ -90,6 +90,52 @@ class LoggerImplTest {
   }
 
   @Test
+  fun logger_handlesEmptyVarargArguments() {
+    val logger = LoggerImpl("testLogger")
+    val testMessage = "Hello, test"
+    val events = mutableListOf<org.slf4j.event.LoggingEvent>()
+    val appender = TestAppender()
+    appender.output = { event -> events.add(event) }
+    logger.appenders.add(appender)
+
+    logger.trace(testMessage, *emptyArray())
+    logger.debug(testMessage, *emptyArray())
+    logger.info(testMessage, *emptyArray())
+    logger.warn(testMessage, *emptyArray())
+    logger.error(testMessage, *emptyArray())
+
+    assertEquals("Each log level should append one event", 5, events.size)
+    events.forEach { event ->
+      assertEquals("Message should be passed to appender", testMessage, event.message)
+      assertTrue("Arguments should be empty", event.arguments.isEmpty())
+    }
+  }
+
+  @Test
+  fun logger_handlesEmptyVarargArguments_andAMarker() {
+    val marker = MarkerFactory.getMarker("marker")
+    val logger = LoggerImpl("testLogger")
+    val testMessage = "Hello, test"
+    val events = mutableListOf<org.slf4j.event.LoggingEvent>()
+    val appender = TestAppender()
+    appender.output = { event -> events.add(event) }
+    logger.appenders.add(appender)
+
+    logger.trace(marker, testMessage, *emptyArray())
+    logger.debug(marker, testMessage, *emptyArray())
+    logger.info(marker, testMessage, *emptyArray())
+    logger.warn(marker, testMessage, *emptyArray())
+    logger.error(marker, testMessage, *emptyArray())
+
+    assertEquals("Each log level should append one event", 5, events.size)
+    events.forEach { event ->
+      assertEquals("Message should be passed to appender", testMessage, event.message)
+      assertTrue("Arguments should be empty", event.arguments.isEmpty())
+      assertTrue("Marker should be passed to the appender", event.markers.contains(marker))
+    }
+  }
+
+  @Test
   fun logger_handlesOneArgument() {
     val expectedArgument = "argument"
     val logger = LoggerImpl("testLogger")
