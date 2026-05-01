@@ -15,7 +15,7 @@ jobs:
     if: github.event_name != 'release'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Check style
@@ -29,7 +29,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Validate version
@@ -54,7 +54,7 @@ jobs:
   xmllint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Install tools
