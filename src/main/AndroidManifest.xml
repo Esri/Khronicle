@@ -5,7 +5,8 @@
         <provider
             android:name=".android.ContextProvider"
             android:authorities="${applicationId}.logger-context-installer"
-            android:exported="false" />
+            android:exported="false"
+            android:multiprocess="true" />
     </application>
 
 </manifest>

@@ -18,12 +18,11 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
-import java.lang.ref.WeakReference
 
 class ContextProvider : ContentProvider() {
 
   override fun onCreate(): Boolean {
-    AndroidAPIProvider.AppContext = WeakReference(context?.applicationContext)
+    context?.let(AndroidAPIProvider::installAppContext)
     return true
   }
 
