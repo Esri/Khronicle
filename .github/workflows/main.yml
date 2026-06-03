@@ -20,6 +20,8 @@ jobs:
           submodules: recursive
       - name: Check style
         run: ./gradlew spotlessCheck
+      - name: Linter
+        run: ./gradlew detekt && ./gradlew detektTest
       - name: Build
         run: ./gradlew build
       - name: Test
@@ -41,6 +43,8 @@ jobs:
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
       - name: Check style
         run: ./gradlew spotlessCheck
+      - name: Linter
+        run: ./gradlew detekt && ./gradlew detektTest
       - name: Build
         run: ./gradlew -PVERSION=${{ steps.version.outputs.tag_name }} build
       - name: Test
