@@ -24,6 +24,12 @@ order to keep them you will need to add the following to your application progua
 
 * Android SDK 24 or newer.
 
+## Multi-process file logging
+
+`RollingFileAppender` automatically keeps the configured file name for the main app
+process and adds a process suffix for non-main processes. For example, `<file>AppLog</file>` writes
+`AppLog.txt` in the main process and `AppLog_my_process.txt` in a `:my_process` process.
+
 ## Resources
 
 * [GitHub Markdown Reference](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
@@ -55,4 +61,3 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's [LICENSE.txt](LICENSE.txt?raw=true) file.
-

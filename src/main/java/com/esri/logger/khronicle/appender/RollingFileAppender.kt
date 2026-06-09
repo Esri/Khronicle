@@ -35,16 +35,22 @@ class RollingFileAppender : Appender {
   @JvmField var file: String = FILENAME_DEFAULT
 
   private val bufferedWriter: BufferedWriter by lazy {
-    val appDir = AndroidAPIProvider.filesDir
-    val logDir = File("$appDir/logs")
-    if (!logDir.exists()) {
-      logDir.mkdir()
+    val appDir =
+        requireNotNull(AndroidAPIProvider.filesDir) {
+          "Khronicle app context is unavailable; install it before using file logging."
+        }
+    val logDir = File(appDir, "logs")
+    val resolvedFileName = AndroidAPIProvider.resolveLogFileName(file)
+    if (!logDir.exists() && !logDir.mkdirs()) {
+      error("Could not create Khronicle log directory: $logDir")
     }
 
-    logDir.rotateFilesInPath(file, EXTENSION, MAX_FILES)
+    logDir.rotateFilesInPath(resolvedFileName, EXTENSION, MAX_FILES)
 
-    val logFile = File("${logDir}/$file$EXTENSION")
-    logFile.createNewFile()
+    val logFile = File(logDir, "$resolvedFileName$EXTENSION")
+    if (!logFile.exists() && !logFile.createNewFile()) {
+      error("Could not create Khronicle log file: $logFile")
+    }
     BufferedWriter(FileWriter(logFile))
   }
 

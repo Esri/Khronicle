@@ -1,4 +1,4 @@
-// Copyright 2025 Esri
+// Copyright 2026 Esri
 //
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,25 +14,21 @@
 
 package com.esri.logger.khronicle.android
 
-import android.app.Application
-import java.io.File
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
 
-object AndroidAPIProvider {
-  var AppContext: Application? = null
+class AndroidAPIProviderTest {
 
-  fun installAppContext(application: Application) {
-    AppContext = application
+  @Before
+  fun clearInstalledContext() {
+    AndroidAPIProvider.AppContext = null
   }
 
-  val filesDir: File?
-    get() = AppContext?.filesDir
+  @Test
+  fun resolveLogFileName_withoutInstalledContext_returnsBaseFileName() {
+    val fileName = AndroidAPIProvider.resolveLogFileName("ExampleAppLog")
 
-  internal fun resolveLogFileName(baseFileName: String): String {
-    val context = AppContext ?: return baseFileName
-    return AndroidProcess.resolveLogFileName(
-        baseFileName = baseFileName,
-        packageName = context.packageName,
-        processName = AndroidProcess.currentProcessName(context),
-    )
+    assertEquals("ExampleAppLog", fileName)
   }
 }

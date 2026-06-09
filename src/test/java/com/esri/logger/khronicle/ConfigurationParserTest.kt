@@ -17,7 +17,6 @@ package com.esri.logger.khronicle
 import com.esri.logger.khronicle.android.AndroidAPIProvider
 import com.esri.logger.khronicle.appender.RollingFileAppender
 import com.esri.logger.khronicle.appender.TestAppender
-import java.lang.ref.WeakReference
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
 import org.junit.Test
@@ -178,7 +177,7 @@ class ConfigurationParserTest {
 
   @Test
   fun parse_rollingFileAppenderGetsAddedCorrectly() {
-    AndroidAPIProvider.AppContext = WeakReference(RuntimeEnvironment.getApplication())
+    AndroidAPIProvider.installAppContext(RuntimeEnvironment.getApplication())
 
     val testConfig =
         """
