@@ -18,7 +18,6 @@ import com.esri.logger.khronicle.android.AndroidAPIProvider
 import io.mockk.every
 import io.mockk.mockk
 import java.io.File
-import java.lang.ref.WeakReference
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -37,19 +36,19 @@ class RollingFileAppenderTest {
 
   @Before
   fun installContextAndCleanLogsDir() {
-    AndroidAPIProvider.AppContext = WeakReference(RuntimeEnvironment.getApplication())
+    AndroidAPIProvider.installAppContext(RuntimeEnvironment.getApplication())
     logsDir = File(RuntimeEnvironment.getApplication().filesDir, "logs")
     logsDir.deleteRecursively()
   }
 
   @After
   fun clearInstalledContext() {
-    AndroidAPIProvider.AppContext = WeakReference(null)
+    AndroidAPIProvider.AppContext = null
   }
 
   @Test
   fun append_withoutInstalledContext_throws() {
-    AndroidAPIProvider.AppContext = WeakReference(null)
+    AndroidAPIProvider.AppContext = null
     val appender = RollingFileAppender().apply { file = "NoContextLog" }
 
     assertThrows(IllegalArgumentException::class.java) { appender.append(loggingEvent("hello")) }

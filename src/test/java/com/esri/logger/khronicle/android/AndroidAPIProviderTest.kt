@@ -14,7 +14,6 @@
 
 package com.esri.logger.khronicle.android
 
-import java.lang.ref.WeakReference
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +22,7 @@ class AndroidAPIProviderTest {
 
   @Before
   fun clearInstalledContext() {
-    AndroidAPIProvider.AppContext = WeakReference(null)
+    AndroidAPIProvider.AppContext = null
   }
 
   @Test

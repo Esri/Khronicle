@@ -14,22 +14,21 @@
 
 package com.esri.logger.khronicle.android
 
-import android.content.Context
+import android.app.Application
 import java.io.File
-import java.lang.ref.WeakReference
 
 object AndroidAPIProvider {
-  var AppContext: WeakReference<Context?> = WeakReference(null)
+  var AppContext: Application? = null
 
-  fun installAppContext(context: Context) {
-    AppContext = WeakReference(context.applicationContext)
+  fun installAppContext(application: Application) {
+    AppContext = application
   }
 
   val filesDir: File?
-    get() = AppContext.get()?.filesDir
+    get() = AppContext?.filesDir
 
   internal fun resolveLogFileName(baseFileName: String): String {
-    val context = AppContext.get() ?: return baseFileName
+    val context = AppContext ?: return baseFileName
     return AndroidProcess.resolveLogFileName(
         baseFileName = baseFileName,
         packageName = context.packageName,
